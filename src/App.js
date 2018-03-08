@@ -7,12 +7,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <h1>Coming Soon</h1>
-        <Card 
+        <h1>Coming Soon</h1>
+        <Card
           isFlipped={false}
           svgName="ace_of_spades"
         />
-        <Card 
+        <Card
           isFlipped={false}
           svgName="jack_of_spades"
         />
