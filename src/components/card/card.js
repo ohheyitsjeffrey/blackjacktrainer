@@ -22,8 +22,10 @@ class Card extends Component {
   render() {
     return (
       <div className={`playing-card ${this.state.isFlipped ? "flipped" : ""}`}>
-        {/* {this.state.isFlipped? "yes" : "no" } */}
-        <img src={`svg/${this.props.svgName}.svg`} alt="card back" />
+        {this.state.isFlipped
+          ? <img src="svg/card_back.svg" alt="card back" />
+          : <img src={`svg/${this.props.svgName}.svg`} alt={this.props.svgName} />
+        }
       </div>
     );
   }
