@@ -1,13 +1,21 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Card from "./components/card/card.js";
+
+import "./App.css";
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1 className="App-title">blackjacktrainer.info</h1>
-        <span>cards from: https://github.com/notpeter/Vector-Playing-Cards</span>
+      <h1>Coming Soon</h1>
+        <Card 
+          isFlipped={false}
+          svgName="ace_of_spades"
+        />
+        <Card 
+          isFlipped={false}
+          svgName="jack_of_spades"
+        />
       </div>
     );
   }
