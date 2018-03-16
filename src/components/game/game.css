@@ -1,0 +1,14 @@
+.game {
+  display: flex 1 1;
+  flex-direction: column;
+  max-width: 800px;
+  max-height: 100%;
+  margin: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.game-header {
+  text-align: left;
+}
+

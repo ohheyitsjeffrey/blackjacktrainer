@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Card from "./components/card/card.js";
+import Game from "./components/game/game.js";
 
 import "./App.css";
 
@@ -7,15 +7,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Coming Soon</h1>
-        <Card
-          isFlipped={false}
-          svgName="ace_of_spades"
-        />
-        <Card
-          isFlipped={false}
-          svgName="jack_of_spades"
-        />
+        <Game />
+        <p>
+          A game for the masses to count their cards with.  
+          I will write a description when the app is done.
+        </p> 
       </div>
     );
   }
