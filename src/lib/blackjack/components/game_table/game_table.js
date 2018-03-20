@@ -7,16 +7,37 @@ class GameTable extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleHide = this.handleHide.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.renderModal = this.renderModal.bind(this);
 
     this.state = {
       showModal: false
     };
   }
 
-  handleHide() {
-    this.setState({ show: false });
+  toggleModal() {
+    this.setState(prevState => {
+      return { showModal: !prevState.showModal };
+    });
   }
+
+  renderModal() {
+    return (
+      <Modal
+        show={this.state.showModal}
+        container={this}
+        aria-labelledby="contained-modal-title"
+      >
+        <Modal.Body>
+          insert modal message plz
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.toggleModal}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
   render() {
     return (
       <div className="modal-container" >
@@ -30,20 +51,7 @@ class GameTable extends Component {
             </div>
           </div>
         </div>
-
-        <Modal
-          show={this.state.showModal}
-          onHide={this.handleHide}
-          container={this}
-          aria-labelledby="contained-modal-title"
-        >
-          <Modal.Body>
-            insert modal message plz
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.handleHide}>Close</Button>
-          </Modal.Footer>
-        </Modal>
+        {this.renderModal()}
       </div>
     );
   }
