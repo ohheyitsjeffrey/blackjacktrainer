@@ -1,11 +1,12 @@
 .controls {
   display: flex;
-  margin: 5px;
+  flex-grow: 1;
+  flex-shrink: 1;  
 }
 
 .control-wrapper {
-  margin: 5px;
   flex-basis: 25%;
-  flex-shrink: 1;
   flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px;
 }

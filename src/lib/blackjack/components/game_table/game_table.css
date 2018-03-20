@@ -1,0 +1,31 @@
+.game-table-container { 
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(76, 175, 80);
+  position: relative;
+  padding-top: 80%;
+}
+
+.game-table-inner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.game-table-player,
+.game-table-dealer  {
+  display: flex 1 1;
+  flex-direction: column;
+  width: 100%;
+  height: 50%;
+}
+
+.modal-container {
+  position: relative;
+}
+
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}
