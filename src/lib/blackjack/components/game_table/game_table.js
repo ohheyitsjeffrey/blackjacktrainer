@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
 
+import Card from "../card/card.js";
+
 import "./game_table.css";
 
 class GameTable extends Component {
@@ -38,16 +40,27 @@ class GameTable extends Component {
     );
   }
 
+  renderHand(){
+    return (
+      <div className="hand">
+        <Card 
+          svgName="9_of_hearts"
+          isFlipped={true}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="modal-container" >
         <div className="game-table game-table-container">
           <div className="game-table game-table-inner">
             <div className="game-table game-table-dealer">
-              dealer
+              {this.renderHand()}
             </div>
             <div className="game-table game-table-player">
-              player
+              {this.renderHand()}
             </div>
           </div>
         </div>
