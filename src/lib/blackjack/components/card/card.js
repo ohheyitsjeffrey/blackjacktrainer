@@ -22,11 +22,14 @@ class Card extends Component {
   }
   
   render() {
+    const cardSVG = `${this.props.value}_of_${this.props.suit}`
+    const cardName = `${this.props.value} of ${this.props.suit}`
+    
     return (
       <div className={`playing-card ${this.state.isFlipped ? "flipped" : ""}`}>
         {this.state.isFlipped
-          ? <img src="svg/card_back.svg" alt="card back" />
-          : <img src={`svg/${this.props.svgName}.svg`} alt={this.props.svgName} />
+          ? <img src="svg/card_back.svg" alt="flipped card" />
+          : <img src={`svg/${cardSVG}.svg`} alt={cardName} />
         }
       </div>
     );
@@ -34,7 +37,8 @@ class Card extends Component {
 }
 
 Card.propTypes =  {
-  svgName: PropTypes.string.isRequired,
+  suit: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
   isFlipped: PropTypes.bool.isRequired,
 };
 

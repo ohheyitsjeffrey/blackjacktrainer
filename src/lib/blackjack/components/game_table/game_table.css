@@ -30,6 +30,7 @@
 
 .hand {
   height: 70%;
+  display: inline-flex
 }
 
 .modal-container .modal, .modal-container .modal-backdrop {

@@ -40,12 +40,17 @@ class GameTable extends Component {
     );
   }
 
-  renderHand(){
+  renderHand() {
     return (
       <div className="hand">
-        <Card 
+        <Card
           svgName="9_of_hearts"
           isFlipped={true}
+        />
+        <Card
+          suit="hearts"
+          value="9"
+          isFlipped={false}
         />
       </div>
     );
