@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
 
 import Card from "../card/card.js";
+import Hand from "./hand.js";
 
 import "./game_table.css";
 
@@ -40,32 +41,77 @@ class GameTable extends Component {
     );
   }
 
-  renderHand() {
-    return (
-      <div className="hand">
-        <Card
-          svgName="9_of_hearts"
-          isFlipped={true}
-        />
-        <Card
-          suit="hearts"
-          value="9"
-          isFlipped={false}
-        />
-      </div>
-    );
-  }
-
   render() {
+    const thisHand = [
+      {
+        suit: "hearts",
+        value: "9"
+      },
+      {
+        suit: "diamonds",
+        value: "2"
+      },
+      {
+        suit: "clubs",
+        value: "4"
+      }
+    ];
+
+    const thisHand2 = [
+      {
+        suit: "clubs",
+        value: "3"
+      },
+      {
+        suit: "clubs",
+        value: "3"
+      },
+      {
+        suit: "clubs",
+        value: "3"
+      },
+      {
+        suit: "clubs",
+        value: "3"
+      },
+      {
+        suit: "clubs",
+        value: "3"
+      },
+      {
+        suit: "clubs",
+        value: "3"
+      },
+
+    ];
+
+    const thisHand3 = [
+      {
+        suit: "hearts",
+        value: "ace"
+      }
+    ];
+
+
     return (
       <div className="modal-container" >
         <div className="game-table game-table-container">
           <div className="game-table game-table-inner">
             <div className="game-table game-table-dealer">
-              {this.renderHand()}
+              <Hand
+                cards={thisHand}
+                collapsed={false}
+              />
             </div>
             <div className="game-table game-table-player">
-              {this.renderHand()}
+              <Hand
+                cards={thisHand2}
+                collapsed={true}
+              />
+              <Hand
+                cards={thisHand3}
+                collapsed={true}
+              />
             </div>
           </div>
         </div>

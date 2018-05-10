@@ -12,16 +12,17 @@
   bottom: 0;
   right: 0;
   left: 0;
+  flex-direction: column;
 }
 
 .game-table-player,
 .game-table-dealer  {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   height: 50%;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;  
 }
 
 .modal-container {
@@ -30,7 +31,9 @@
 
 .hand {
   height: 70%;
-  display: inline-flex
+  display: inline-flex;
+  align-items: center; 
+  margin: auto;
 }
 
 .modal-container .modal, .modal-container .modal-backdrop {

@@ -1,7 +1,10 @@
 .playing-card {
-  height: 70%;
+  padding: 3px;
+  height: 90%;
 }
 
-img {
-  height: 100%;
+object {
+  /* height: 100%; */
+
+  /* display: inline; */
 }
