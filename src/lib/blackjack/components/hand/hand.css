@@ -1,0 +1,12 @@
+.hand {
+  align-content: center;
+  display: inline-flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex: 1;
+  height: 70%;
+  justify-content: center; 
+  margin: auto;
+  min-width: 0;
+  overflow: visible;
+}

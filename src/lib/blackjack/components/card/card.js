@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import "./card.css";
-
 class Card extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isFlipped: this.props.isFlipped,
+      renderedWidth: 0,
     };
     this.flipCard = this.flipCard.bind(this);
   }
@@ -15,48 +14,39 @@ class Card extends Component {
   flipCard() {
     this.setState(prevState => {
       return {
-        isFlipped: !prevState.isFlipped
+        isFlipped: !prevState.isFlipped,
       };
     });
   }
 
   getCardStyles() {
-    return this.props.collapsedStyles
+    /* Get card styles returns styles specific to whether or not the cards in
+    the hand will overflow. */    
+    const commonStyles = {
+      zIndex: this.props.zIndex,
+    };
+
+    return this.props.willOverflow
       ? {
-        zIndex: this.props.zIndex,
-        height: this.props.height,
-        // transform: `translate(-${(this.props.zIndex - 1) * 82}%)`,
-        // transform: `translate(-${(this.props.zIndex - 1) * 50}%)`,
+        ...commonStyles,
         position: "absolute",
-
-
-        // position: 'absolute',
-
+        transform: `translate(${this.props.zIndex * 18}%)`,
       }
       : {
-        zIndex: this.props.zIndex,
-        padding: '3px',
-        height: this.props.height,
+        ...commonStyles,
+        padding: "3px",
       };
-    // height: this.props.height,
-    // height: '100%',
-    // position: "absolute",
-    // transform: `translate(-${(this.props.zIndex - 1) * 82}%)`,
-    // position: 'relative',
-
-    // height: 'auto',
-    // display: 'flex',
   }
 
   render() {
-    const cardSVG = `${this.props.value}_of_${this.props.suit}`
-    const cardName = `${this.props.value} of ${this.props.suit}`
+    const cardSVG = `${this.props.value}_of_${this.props.suit}`;
+    const cardName = `${this.props.value} of ${this.props.suit}`;
 
     return (
-      // <div className="playing-card">
-      <object
-        height="100%"
-        data={this.props.isFlipped
+      <img
+        ref={(thisCard) => { this.thisCard = thisCard; }}
+        height={this.props.height}
+        src={this.props.isFlipped
           ? "svg/card_back.svg"
           : `svg/${cardSVG}.svg`
         }
@@ -65,20 +55,18 @@ class Card extends Component {
           : cardName
         }
         style={this.getCardStyles()}
-        viewBox="0 0 20 10"
       />
-      // </div>
     );
   }
 }
 
 Card.propTypes = {
+  height: PropTypes.number.isRequired,
+  isFlipped: PropTypes.bool.isRequired,
   suit: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  isFlipped: PropTypes.bool.isRequired,
-  height: PropTypes.number.isRequired,
+  willOverflow: PropTypes.bool.isRequired,
   zIndex: PropTypes.number.isRequired,
-  collapsedStyles: PropTypes.bool.isRequired,
 
 };
 

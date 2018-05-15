@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button, Modal } from "react-bootstrap";
 
-import Card from "../card/card.js";
-import Hand from "./hand.js";
+import Hand from "../hand/hand.js";
 
 import "./game_table.css";
 
@@ -42,76 +42,27 @@ class GameTable extends Component {
   }
 
   render() {
-    const thisHand = [
-      {
-        suit: "hearts",
-        value: "9"
-      },
-      {
-        suit: "diamonds",
-        value: "2"
-      },
-      {
-        suit: "clubs",
-        value: "4"
-      }
-    ];
-
-    const thisHand2 = [
-      {
-        suit: "clubs",
-        value: "3"
-      },
-      {
-        suit: "clubs",
-        value: "3"
-      },
-      {
-        suit: "clubs",
-        value: "3"
-      },
-      {
-        suit: "clubs",
-        value: "3"
-      },
-      {
-        suit: "clubs",
-        value: "3"
-      },
-      {
-        suit: "clubs",
-        value: "3"
-      },
-
-    ];
-
-    const thisHand3 = [
-      {
-        suit: "hearts",
-        value: "ace"
-      }
-    ];
-
-
     return (
       <div className="modal-container" >
         <div className="game-table game-table-container">
           <div className="game-table game-table-inner">
             <div className="game-table game-table-dealer">
-              <Hand
-                cards={thisHand}
-                collapsed={false}
-              />
+              {this.props.dealersHand
+                ? <Hand cards={this.props.dealersHand} />
+                : <div />
+              }
+
             </div>
             <div className="game-table game-table-player">
-              <Hand
-                cards={thisHand2}
-                collapsed={true}
-              />
-              <Hand
-                cards={thisHand3}
-                collapsed={true}
-              />
+              {this.props.playersHand
+                ? this.props.playersHand.map((hand, index) => {
+                  return (<Hand
+                    cards={hand}
+                    key={`player-hand-${index}`}
+                  />);
+                })
+                : <div />
+              }
             </div>
           </div>
         </div>
@@ -120,5 +71,10 @@ class GameTable extends Component {
     );
   }
 }
+
+Hand.propTypes = {
+  dealersHand: PropTypes.object,
+  playersHands: PropTypes.array
+};
 
 export default GameTable;
