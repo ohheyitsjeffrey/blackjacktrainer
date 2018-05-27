@@ -13,8 +13,9 @@ class GameHeader extends Component {
         </div>
         <div className="game-header-menu">
           <DropdownButton
-            title={"menu"}
+            title="game-options-menu"
             pullRight={true}
+            id="game-options-menu"
           // key={i}
           >
             <MenuItem eventKey="1">Action</MenuItem>
