@@ -14,5 +14,17 @@ test("BlackJackEngine Initiates With Existing GameState If One Exists", () => {
   localStorage.setItem("gameState", "hello");
 
   const engine = new BlackJackEngine();
-  expect(engine.gameState).toBe("hello");
+  expect(engine.gameState).toEqual("hello");
+});
+
+test("writeCurrentGameState Overwrites Existing GameState. ", () => {
+  const testMessage = "I was written by writeCurrentGameState()";
+  // localStorage.setItem("gameState", testMessage);
+
+  const engine = new BlackJackEngine();
+  engine.gameState = testMessage;
+  engine.writeCurrentGameState();
+
+  expect(localStorage.getItem("gameState")).toEqual(testMessage);
+
 });
