@@ -5,7 +5,6 @@ class Shoe {
   constructor(size=1) {
     this.cards = this.newShoe(size);
   }
-
   // size specifies the number of decks in a shoe
   newShoe(size) {
     const suits = suitsAndValues.suits;

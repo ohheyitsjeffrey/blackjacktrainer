@@ -5,10 +5,12 @@ test("Creating A Shoe Of Size 1 Contains 52 Cards", () => {
   const shoe = new Shoe();
   expect(shoe.cards.length).toEqual(52);
 });
+
 test("Creating A Shoe Of Size 8 Contains 416 Cards", () => {
   const shoe = new Shoe(8);
   expect(shoe.cards.length).toEqual(416);
 });
+
 test("Shuffling A Shoe Randomizes The Shoe Order", () => {
   const shoe = new Shoe(1);
   const copyOfOriginalShoe = _.cloneDeep(shoe);

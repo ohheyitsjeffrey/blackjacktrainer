@@ -1,4 +1,4 @@
-.game-table-container { 
+.game-table-container {
   background-color: rgb(76, 175, 80);
   display: flex;
   flex-direction: column;
@@ -17,7 +17,7 @@
 
 .game-table-player,
 .game-table-dealer  {
-  align-items: stretch;  
+  align-items: stretch;
   display: flex;
   flex-direction: row;
   height: 50%;
