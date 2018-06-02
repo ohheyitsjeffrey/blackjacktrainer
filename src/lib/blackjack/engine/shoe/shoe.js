@@ -32,6 +32,14 @@ class Shoe {
       this.cards[j] = temp;
     }
   }
+
+  draw() {
+    return this.cards.pop();
+  }
+
+  remainingCount() {
+    return this.cards.length;
+  }
 }
 
 export default Shoe;

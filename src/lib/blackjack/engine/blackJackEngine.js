@@ -12,6 +12,10 @@ class BlackJackEngine {
   createNewGameState() {
     return {
       shoe: new Shoe(8),
+      hands:{
+        dealer: [],
+        player: [],
+      },
     };
   }
 

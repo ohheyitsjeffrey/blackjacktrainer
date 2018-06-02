@@ -29,3 +29,32 @@ test("Shuffling A Shoe Randomizes The Shoe Order", () => {
   // finally verify they are not in the same order
   expect(shoe.cards).not.toEqual(copyOfOriginalShoe.cards);
 });
+
+test("Drawing A Card Returns 'Top' Card In Shoe", () => {
+  const shoe = new Shoe(1);
+  const lastIndex = shoe.cards.length - 1;
+
+  const lastCard = shoe.cards[lastIndex];
+  const drawnCard = shoe.draw();
+
+  expect(lastCard).toEqual(drawnCard);
+});
+
+test("Drawing A Card Removes That Card From Shoe", () => {
+  const shoe = new Shoe(1);
+  const initialLength = shoe.cards.length;
+
+  const drawnCard = shoe.draw();
+
+  // verify a card has been removed and that the card we drew is no longer in the shoe
+  expect(shoe.cards.length).toEqual(initialLength - 1);
+  expect(shoe.cards).not.toContainEqual(drawnCard);
+});
+
+test("remainingCount Method Accurately Returns Cards Total", () => {
+  const shoe = new Shoe(1);
+  const shoeLength = shoe.cards.length;
+  const shoeRemaining = shoe.remainingCount();
+
+  expect(shoeRemaining).toEqual(shoeLength);
+});
