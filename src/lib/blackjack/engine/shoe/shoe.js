@@ -1,8 +1,10 @@
+import _ from "lodash";
+
 import Card from "../card/card.js";
 import { suitsAndValues } from "../suitsAndValues.js";
 
 class Shoe {
-  constructor(size=1) {
+  constructor(size = 1) {
     this.cards = this.newShoe(size);
   }
   // size specifies the number of decks in a shoe
@@ -12,7 +14,7 @@ class Shoe {
 
     const shoe = [];
 
-    for(let i = 0; i < size; i++){
+    for (let i = 0; i < size; i++) {
       suits.forEach(suit => {
         values.forEach(value => {
           shoe.push(new Card(suit, value));
@@ -24,13 +26,7 @@ class Shoe {
   }
 
   shuffle() {
-    for(let i = 0; i < this.cards.length; i++) {
-      let j = Math.floor(Math.random(0) * this.cards.length);
-      let temp = this.cards[i];
-      // swap cards in positions i and j
-      this.cards[i] = this.cards[j];
-      this.cards[j] = temp;
-    }
+    this.cards = _.shuffle(this.cards);
   }
 
   draw() {
