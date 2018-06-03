@@ -19,7 +19,9 @@ class BlackJack extends Component {
   render() {
     return (
       <div className="blackjack">
-        <GameHeader />
+        <GameHeader
+          funds={this.state.gameState.data.funds}
+        />
         <GameTable />
         <Controls />
       </div>

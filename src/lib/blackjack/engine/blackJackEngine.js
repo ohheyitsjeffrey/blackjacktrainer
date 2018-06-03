@@ -1,8 +1,8 @@
 import Shoe from "./shoe/shoe.js";
 
-class BlackJackEngine {
+export default class BlackJackEngine {
   constructor() {
-    this.gameState = this.restoreGameState()
+    this.data = this.restoreGameState()
       ? this.restoreGameState()
       : this.createNewGameState();
     
@@ -11,6 +11,8 @@ class BlackJackEngine {
   // create a new game state for the engine to reference 
   createNewGameState() {
     return {
+      options: {},               // coming soon
+      funds: 1000,
       shoe: new Shoe(8),
       hands:{
         dealer: [],
@@ -20,7 +22,7 @@ class BlackJackEngine {
   }
 
   restoreGameState() {
-    return  localStorage.getItem("gameState");
+    return localStorage.getItem("gameState");
   }
 
   writeCurrentGameState() {
@@ -28,6 +30,12 @@ class BlackJackEngine {
       localStorage.setItem("gameState", this.gameState);
     }
   }
-}
 
-export default BlackJackEngine;
+  clearRound() {
+    this.data.funds = undefined; 
+    this.data.hands = {
+      dealer: [],
+      player: [],   
+    };
+  }
+}

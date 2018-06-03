@@ -8,3 +8,4 @@ it("App Renders Without Crashing", () => {
   ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
+

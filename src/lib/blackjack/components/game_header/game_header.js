@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { DropdownButton, MenuItem } from "react-bootstrap";
 
 import "./game_header.css";
@@ -9,7 +10,7 @@ class GameHeader extends Component {
     return (
       <div className="game-header">
         <div className="game-header-funds">
-          $0
+          $ {this.props.funds}
         </div>
         <div className="game-header-menu">
           <DropdownButton
@@ -28,5 +29,10 @@ class GameHeader extends Component {
     );
   }
 }
+
+GameHeader.propTypes = {
+  funds: PropTypes.number.isRequired,
+};
+
 
 export default GameHeader;
