@@ -12,7 +12,7 @@ class BlackJack extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameState: new BlackJackEngine(),
+      engine: new BlackJackEngine(),
     };
   }
 
@@ -20,7 +20,7 @@ class BlackJack extends Component {
     return (
       <div className="blackjack">
         <GameHeader
-          funds={this.state.gameState.data.funds}
+          funds={this.state.engine.gameState.funds}
         />
         <GameTable />
         <Controls />

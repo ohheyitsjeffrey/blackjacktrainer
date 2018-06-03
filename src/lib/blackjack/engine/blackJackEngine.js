@@ -2,7 +2,7 @@ import Shoe from "./shoe/shoe.js";
 
 export default class BlackJackEngine {
   constructor() {
-    this.data = this.restoreGameState()
+    this.gameState = this.restoreGameState()
       ? this.restoreGameState()
       : this.createNewGameState();
     
@@ -11,6 +11,7 @@ export default class BlackJackEngine {
   // create a new game state for the engine to reference 
   createNewGameState() {
     return {
+      actions: {},               // coming soon                
       options: {},               // coming soon
       funds: 1000,
       shoe: new Shoe(8),
