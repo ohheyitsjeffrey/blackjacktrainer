@@ -51,10 +51,45 @@ test("Drawing A Card Removes That Card From Shoe", () => {
   expect(shoe.cards).not.toContainEqual(drawnCard);
 });
 
-test("remainingCount Method Accurately Returns Cards Total", () => {
+test("remainingCount() Method Accurately Returns Cards Total", () => {
   const shoe = new Shoe(1);
   const shoeLength = shoe.cards.length;
   const shoeRemaining = shoe.remainingCount();
 
   expect(shoeRemaining).toEqual(shoeLength);
+});
+
+test("toString() Returns String Of Array", () => {
+  const shoe = new Shoe();
+  // convert the shoe to a string array
+  const shoeString = shoe.toString();
+
+  expect(typeof shoeString).toEqual("string");
+});
+
+test("toString() Values Reflect Those Of Original Array And Can Be Converted Back", () => {
+  const shoe = new Shoe();
+  // convert the shoe to a string array
+  const shoeString = shoe.toString();
+  // now convert it back into an array of objects
+  const stringToArray = JSON.parse(`[${shoeString}]`);
+
+  // verify card data from string in indexes reflects original values.
+  _.forEach(stringToArray, (cardData, index) => {
+    expect(shoe.cards[index].value).toEqual(cardData.value);
+    expect(shoe.cards[index].suit).toEqual(cardData.suit);
+  });
+});
+
+test("restoreFromString() Properly Restores Cards From toString() Backup", () => {
+  const shoe = new Shoe();
+  // convert the shoe to a string array
+  const shoeString = shoe.toString();
+  // now convert it back into a shoe
+  const restoredShoe = new Shoe().restoreFromString(shoeString);
+
+  // verify cards are the same and in the same order
+  _.forEach(restoredShoe, (restoredCard, index) => {
+    expect(shoe.cards[index]).toEqual(restoredCard);
+  });
 });

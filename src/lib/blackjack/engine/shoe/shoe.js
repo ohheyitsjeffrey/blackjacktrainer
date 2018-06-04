@@ -35,6 +35,35 @@ class Shoe {
 
   remainingCount() {
     return this.cards.length;
+  } 
+  
+  // convert the shoe into an array of objects represented as strings to be written to local storage
+  toString() {
+    const stringArray = [];
+    _.forEach(this.cards, card => {
+      stringArray.push(
+        card.toString()
+      );
+    });
+ 
+    return stringArray.toString();
+  }
+
+  // convert a string array representation of the shoe from local storage back into a shoe object of
+  // card objects.
+  restoreFromString(stringArray){
+    this.cards = [];
+    const convertedArray = JSON.parse(`[${stringArray}]`);
+
+    _.forEach(convertedArray, cardData => {
+      // convert the card data string back to a card object
+      let card = new Card(
+        cardData.suit,
+        cardData.value
+      );
+      // now restore the card to the cards array
+      this.cards.push(card);
+    });
   }
 }
 

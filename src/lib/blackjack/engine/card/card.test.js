@@ -20,3 +20,16 @@ test("Creating A Card With An Invalid Suit Parameter Throws An 'InvalidCardValue
     new Card("diamonds", "not a real value");
   }).toThrow("Not a valid card value");
 });
+
+test("toString() Returns A String Object Of The Card ", () => {
+  const suit = "diamonds";
+  const value = "5";
+
+  const card = new Card(suit, value);
+  const cardString = card.toString();
+
+  const newCard = JSON.parse(cardString);
+  
+  expect(newCard.suit).toEqual(card.suit);
+  expect(newCard.suit).toEqual(card.suit);
+});

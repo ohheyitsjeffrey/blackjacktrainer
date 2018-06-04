@@ -20,9 +20,11 @@ class BlackJack extends Component {
     return (
       <div className="blackjack">
         <GameHeader
-          funds={this.state.engine.gameState.funds}
+          funds={this.state.engine.funds}
         />
-        <GameTable />
+        <GameTable 
+          hasBet={typeof this.state.engine.bet !== "undefined"}
+        />
         <Controls />
       </div>
     );

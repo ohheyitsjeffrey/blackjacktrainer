@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Button, Modal } from "react-bootstrap";
 
 import Hand from "../hand/hand.js";
+import ModalTemplates from "./modal-templates/modal_templates.js";
 
 import "./game_table.css";
 
@@ -14,7 +15,7 @@ class GameTable extends Component {
     this.renderModal = this.renderModal.bind(this);
 
     this.state = {
-      showModal: false
+      showModal: true
     };
   }
 
@@ -32,7 +33,7 @@ class GameTable extends Component {
         aria-labelledby="contained-modal-title"
       >
         <Modal.Body>
-          insert modal message plz
+          {ModalTemplates.bet.message()}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.toggleModal}>Close</Button>

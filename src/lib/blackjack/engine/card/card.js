@@ -11,6 +11,12 @@ class Card {
     this.suit = suit;
     this.value = value;
   }
+  toString() {
+    return JSON.stringify({
+      suit: this.suit,
+      value: this.value,
+    });
+  }
 }
 
 export default Card;
