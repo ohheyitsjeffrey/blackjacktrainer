@@ -32,3 +32,16 @@
 .modal-container .modal, .modal-container .modal-backdrop {
   position: absolute;
 }
+
+.modal-action-controls {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;  
+}
+
+.modal-action-control-wrapper {
+  flex-basis: 25%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px;
+}

@@ -64,7 +64,7 @@ class Hand extends Component {
             return (
               <Card
                 height={this.state.containerHeight}
-                isFlipped={false}
+                isFlipped={this.props.isDealer && !this.props.isDealersTurn && index === 0}
                 key={index}
                 suit={card.suit}
                 value={card.value}
@@ -82,6 +82,8 @@ class Hand extends Component {
 
 Hand.propTypes = {
   cards: PropTypes.array.isRequired,
+  isDealer: PropTypes.bool,
+  isDealersTurn: PropTypes.bool,
 };
 
 
