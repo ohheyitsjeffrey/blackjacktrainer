@@ -30,9 +30,15 @@ class BlackJack extends Component {
     this.decrementBet = this.decrementBet.bind(this);
     this.placeBet = this.placeBet.bind(this);
     this.dealNewRound = this.dealNewRound.bind(this);
+
+    // controls 
+    this.hit = this.hit.bind(this);
   }
 
   createNewState() {
+    const newShoe = new Shoe(8);
+    newShoe.shuffle();
+
     return {
       options: {
         minimumBet: betStep,
@@ -40,11 +46,9 @@ class BlackJack extends Component {
       funds: 1000,
       bet: betStep,
       betPlaced: false,
-      shoe: new Shoe(8),
-      hands: {
-        dealer: new Hand(),
-        player: [new Hand()],
-      }
+      shoe: newShoe,
+      dealersHand: new Hand(),
+      playersHands: [new Hand()],
     };
   }
 
@@ -52,7 +56,7 @@ class BlackJack extends Component {
   hasStateInLocalStorage() {
     // check for relevent keys to make sure there is a valid game state in local storage somewhere.
     return (
-      localStorage.getItem("funds") !== null && 
+      localStorage.getItem("funds") !== null &&
       localStorage.getItem("bet") !== null &&
       localStorage.getItem("betPlaced") !== null &&
       localStorage.getItem("shoe") !== null &&
@@ -81,10 +85,9 @@ class BlackJack extends Component {
       bet: restoredBet,
       betPlaced: (restoredBetPlaced === "true"),
       shoe: restoredShoe,
-      hands: {
-        dealer: new Hand(),
-        player: [new Hand()],
-      }
+      dealersHand: new Hand(),
+      playersHands: [new Hand()],
+      playersHandIndex: 0,
     };
   }
 
@@ -114,25 +117,38 @@ class BlackJack extends Component {
   }
 
   placeBet() {
-    this.setState( () => ({betPlaced: true})); 
+    this.setState(() => ({ betPlaced: true }));
     this.dealNewRound();
   }
 
   dealNewRound() {
     const shoe = this.state.shoe;
-    const dealer = (new Hand());
-    const player = (new Hand());
+    const dealer = new Hand();
+    const player = new Hand();
 
     dealer.insert(shoe.draw());
     player.insert(shoe.draw());
     dealer.insert(shoe.draw());
     player.insert(shoe.draw());
     this.setState({
-      hands: {
-        dealer: dealer,
-        player: [player],
-      },
+      dealersHand: dealer,
+      playersHands: [player],
     });
+  }
+
+  hit() {
+    if (this.state.bet) {
+      const shoe = this.state.shoe;
+      const hands = this.state.playersHands;
+
+      console.log(hands)
+      hands[0].insert(shoe.draw());
+
+      this.setState({
+        shoe,
+        playersHands: hands,
+      });
+    }
   }
 
   render() {
@@ -146,11 +162,13 @@ class BlackJack extends Component {
           betPlaced={this.state.betPlaced}
           incrementBet={() => { this.incrementBet(); }}
           decrementBet={() => { this.decrementBet(); }}
-          placeBet={()=> { this.placeBet(); }}
-          playersHand={this.state.hands.player} 
-          dealersHand={this.state.hands.dealer}
+          placeBet={() => { this.placeBet(); }}
+          dealersHand={this.state.dealersHand}
+          playersHands={this.state.playersHands}
         />
-        <Controls />
+        <Controls
+          hit={this.hit}
+        />
       </div>
     );
   }

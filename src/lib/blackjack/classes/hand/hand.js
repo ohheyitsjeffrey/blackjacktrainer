@@ -30,7 +30,7 @@ export default class Hand {
           this.value += 10;
           break;
         default:
-          this.value += parseInt(card.value);
+          this.value += parseInt(card.value, 10);
           break;
       }
     });

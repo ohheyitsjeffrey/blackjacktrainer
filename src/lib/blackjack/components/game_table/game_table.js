@@ -104,7 +104,6 @@ class GameTable extends Component {
 
 
   render() {
-    console.log(this.props)
     return (
       <div className="modal-container" >
         <div className="game-table game-table-container">
@@ -121,8 +120,8 @@ class GameTable extends Component {
 
             </div>
             <div className="game-table game-table-player">
-              {this.props.playersHand
-                ? this.props.playersHand.map((hand, index) => {
+              {this.props.playersHands
+                ? this.props.playersHands.map((hand, index) => {
                   return (<Hand
                     cards={hand.cards}
                     key={`player-hand-${index}`}
@@ -147,8 +146,8 @@ GameTable.propTypes = {
   incrementBet: PropTypes.func,
   decrementBet: PropTypes.func,
   placeBet: PropTypes.func,
-  dealersHand: PropTypes.array,
-  playersHand: PropTypes.array,
+  dealersHand: PropTypes.object,
+  playersHands: PropTypes.array,
 };
 
 export default GameTable;

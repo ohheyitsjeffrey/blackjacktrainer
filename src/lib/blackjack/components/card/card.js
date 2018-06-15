@@ -21,16 +21,30 @@ class Card extends Component {
 
   getCardStyles() {
     /* Get card styles returns styles specific to whether or not the cards in
-    the hand will overflow. */    
+    the hand will overflow. */
     const commonStyles = {
       zIndex: this.props.zIndex,
+    };
+
+    // TODO improve this as it is sloppy and not quite right but it works for now
+    const calculateTransform = () => {
+      // this can probably be simplified somehow
+      if (this.props.handSize % 2 === 0) {  // number of cards in hand is even
+        if (this.props.zIndex <= this.props.handSize / 2) {
+          return (this.props.zIndex - Math.ceil(this.props.handSize / 2)) * 18;
+        } else {
+          return (this.props.zIndex - Math.floor(this.props.handSize / 2)) * 18;
+        }
+      } else {                             // number of cards in hand is odd
+        return (this.props.zIndex - Math.ceil(this.props.handSize / 2)) * 18;
+      }
     };
 
     return this.props.willOverflow
       ? {
         ...commonStyles,
         position: "absolute",
-        transform: `translate(${this.props.zIndex * 18}%)`,
+        transform: `translate(${calculateTransform()}%)`,
       }
       : {
         ...commonStyles,
@@ -40,7 +54,6 @@ class Card extends Component {
 
   render() {
     const cardSVG = `${this.props.value}_of_${this.props.suit}`;
-    const cardName = `${this.props.value} of ${this.props.suit}`;
 
     return (
       <img
@@ -50,10 +63,7 @@ class Card extends Component {
           ? "svg/card_back.svg"
           : `svg/${cardSVG}.svg`
         }
-        alt={this.props.isFlipped
-          ? "flipped playing card"
-          : cardName
-        }
+        alt=""
         style={this.getCardStyles()}
       />
     );
@@ -66,6 +76,7 @@ Card.propTypes = {
   suit: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   willOverflow: PropTypes.bool.isRequired,
+  handSize: PropTypes.number.isRequired,
   zIndex: PropTypes.number.isRequired,
 
 };

@@ -10,7 +10,7 @@ class Hand extends Component {
     super(props, context);
 
     this.state = {
-      cardHeight: 0,
+      containerHeight: 0,
       willOverflow: false,
     };
 
@@ -27,6 +27,10 @@ class Hand extends Component {
     window.addEventListener("resize", this.updateDimensionsAndState);
   }
 
+  componentWillUpdate() {
+    this.updateDimensionsAndState();
+  }
+
   updateDimensionsAndState() {
     /*
     Here we want to update the height of the container to scale the card svgs
@@ -36,28 +40,31 @@ class Hand extends Component {
     of a card, but here we estimate using a rough aspect ratio of the cards
     because it is easier (thus the clientHeight * .7).  As this is opensource 
     by all means feel free to scold me with better ways to do this.  I would 
-    love to hear them : D.
+    love to hear them.
     */
 
     if (this.thisHand) {
-      (((this.thisHand.clientHeight * .7) * this.props.cards.length) > this.thisHand.clientWidth)
-        ? this.setState({
+      if (this.thisHand.clientHeight !== this.state.containerHeight) {
+        this.setState({
           containerHeight: this.thisHand.clientHeight,
-          willOverflow: true,
-        })
-        : this.setState({
-          containerHeight: this.thisHand.clientHeight,
-          willOverflow: false,
         });
+      }
+      if (((this.thisHand.clientHeight * .7) * this.props.cards.length) > this.thisHand.clientWidth &&
+       this.state.willOverflow != true) {
+        this.setState({
+          willOverflow: true,
+        });
+      }
     }
   }
+
 
   render() {
     return (
       <div
         className="hand"
         ref={(thisHand) => { this.thisHand = thisHand; }}
-        style={this.state.willOverflow ? { justifyContent: "flex-start" } : {}}
+        // style={this.state.willOverflow ? { justifyContent: "flex-start" } : {}}
       >
         {this.props.cards && this.state.containerHeight
           ? this.props.cards.map((card, index) => {
@@ -69,6 +76,7 @@ class Hand extends Component {
                 suit={card.suit}
                 value={card.value}
                 willOverflow={this.state.willOverflow}
+                handSize={this.props.cards.length}
                 zIndex={index + 1}
               />
             );
