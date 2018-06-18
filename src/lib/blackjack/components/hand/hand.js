@@ -50,7 +50,7 @@ class Hand extends Component {
         });
       }
       if (((this.thisHand.clientHeight * .7) * this.props.cards.length) > this.thisHand.clientWidth &&
-       this.state.willOverflow != true) {
+       this.state.willOverflow !== true) {
         this.setState({
           willOverflow: true,
         });
@@ -64,7 +64,6 @@ class Hand extends Component {
       <div
         className="hand"
         ref={(thisHand) => { this.thisHand = thisHand; }}
-        // style={this.state.willOverflow ? { justifyContent: "flex-start" } : {}}
       >
         {this.props.cards && this.state.containerHeight
           ? this.props.cards.map((card, index) => {

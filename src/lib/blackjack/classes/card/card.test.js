@@ -31,5 +31,5 @@ test("toString() Returns A String Object Of The Card ", () => {
   const newCard = JSON.parse(cardString);
   
   expect(newCard.suit).toEqual(card.suit);
-  expect(newCard.suit).toEqual(card.suit);
+  expect(newCard.value).toEqual(card.value);
 });

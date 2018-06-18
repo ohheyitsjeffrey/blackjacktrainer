@@ -10,6 +10,7 @@ export default class Hand {
     this.cards.push(card);
     this.calcValue();
   }
+
   // calculate the best value of the card
   calcValue() {
     // reset value to 0
@@ -47,7 +48,12 @@ export default class Hand {
       this.bust = true;
     }
   }
+
   isBlackJack() {
     return (this.cards.length === 2 && this.value === 21);
+  }
+  
+  length() {
+    return this.cards.length;
   }
 }

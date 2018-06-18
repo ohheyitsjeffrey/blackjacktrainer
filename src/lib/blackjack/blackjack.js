@@ -30,9 +30,20 @@ class BlackJack extends Component {
     this.decrementBet = this.decrementBet.bind(this);
     this.placeBet = this.placeBet.bind(this);
     this.dealNewRound = this.dealNewRound.bind(this);
+    this.buyInsurance = this.buyInsurance.bind(this);
 
     // controls 
     this.hit = this.hit.bind(this);
+    this.stand = this.stand.bind(this);
+    this.double = this.double.bind(this);
+    this.split = this.split.bind(this);
+
+    // control checks
+    this.canHit = this.canHit.bind(this);
+    this.canStand = this.canStand.bind(this);
+    this.canDouble = this.canDouble.bind(this);
+    this.canSplit = this.canSplit.bind(this);
+
   }
 
   createNewState() {
@@ -42,6 +53,7 @@ class BlackJack extends Component {
     return {
       options: {
         minimumBet: betStep,
+        dealerStands: 17,
       },
       funds: 1000,
       bet: betStep,
@@ -49,6 +61,9 @@ class BlackJack extends Component {
       shoe: newShoe,
       dealersHand: new Hand(),
       playersHands: [new Hand()],
+      activeHand: 0,
+      isPlayersTurn: false,
+      isDealersTurn: false,
     };
   }
 
@@ -117,8 +132,15 @@ class BlackJack extends Component {
   }
 
   placeBet() {
-    this.setState(() => ({ betPlaced: true }));
+    this.setState((prevState) => ({
+      betPlaced: true,
+      funds: prevState.funds - prevState.bet,
+    }));
     this.dealNewRound();
+  }
+
+  buyInsurance() {
+
   }
 
   dealNewRound() {
@@ -130,28 +152,131 @@ class BlackJack extends Component {
     player.insert(shoe.draw());
     dealer.insert(shoe.draw());
     player.insert(shoe.draw());
+
     this.setState({
       dealersHand: dealer,
       playersHands: [player],
+      isPlayersTurn: true,
     });
   }
 
+  canHit() {
+    const handIndex = this.state.activeHand;
+
+    return this.state.isPlayersTurn &&              // it is the players turn
+      this.state.playersHands.length > 0 &&         // the player has been dealt cards
+      !this.state.playersHands[handIndex].bust &&   // current hand is not busted
+      !this.state.playersHands[handIndex].stand;    // current hand is not standing either
+  }
+
   hit() {
-    if (this.state.bet) {
-      const shoe = this.state.shoe;
-      const hands = this.state.playersHands;
+    const handIndex = this.state.activeHand;
+    const shoe = this.state.shoe;
+    const hands = this.state.playersHands;
 
-      console.log(hands)
-      hands[0].insert(shoe.draw());
+    hands[handIndex].insert(shoe.draw());
+    this.setState({
+      shoe,
+      playersHands: hands,
+    });
+  }
 
-      this.setState({
-        shoe,
-        playersHands: hands,
-      });
-    }
+  canStand() {
+    const handIndex = this.state.activeHand;
+
+    return this.state.isPlayersTurn &&
+      this.state.playersHands.length > 0 &&         // the player has been dealt cards
+      !this.state.playersHands[handIndex].bust &&   // current hand is not busted
+      !this.state.playersHands[handIndex].stand;    // current hand is not standing either
+  }
+
+  stand() {
+    // check to see if this is the last hand in the player's array,   
+    const hands = this.state.playersHands;
+    const handIndex = this.state.activeHand;
+
+    hands[handIndex].stand = true;
+
+    this.setState({
+      playersHands: hands,
+    });
+  }
+
+  canDouble() {
+    const handIndex = this.state.activeHand;
+
+    return this.state.isPlayersTurn &&
+      this.state.playersHands.length > 0 &&                 // the player has been dealt cards
+      this.state.playersHands[handIndex].length() === 2 &&  // the player has their first two cards
+      this.state.funds > this.state.bet &&
+      !this.state.playersHands[handIndex].bust &&           // current hand is not busted
+      !this.state.playersHands[handIndex].stand;            // current hand is not standing either
+  }
+
+  double() {
+    const handIndex = this.state.activeHand;
+    const shoe = this.state.shoe;
+    const hands = this.state.playersHands;
+    const funds = this.state.funds - this.state.bet;
+    const bet = this.state.bet * 2;
+
+ 
+    hands[handIndex].insert(shoe.draw());
+    hands[handIndex].stand = true;
+
+    this.setState({
+      shoe,
+      playersHands: hands,
+      funds,
+      bet,
+    });
+  }
+
+  canSplit() {
+    const handIndex = this.state.activeHand;
+
+    const firstCard = this.state.playersHands[handIndex].cards[0];
+    const secondCard = this.state.playersHands[handIndex].cards[1];
+
+    return this.state.isPlayersTurn &&                              // it is the player's turn
+      this.state.playersHands.length > 0 &&                         // the player has a hand
+      this.state.playersHands[handIndex].cards.length === 2 &&      // hand has not hit
+      firstCard.cardValue() === secondCard.cardValue();             // the cards are of equal value
+  }
+
+  split() {
+    const handIndex = this.state.activeHand;
+    // get card 1 and 2 from the current hand to be split
+    const card1 = this.state.playersHands[handIndex].cards[0];
+    const card2 = this.state.playersHands[handIndex].cards[1];
+
+    // create two new hands
+    const hand1 = new Hand();
+    const hand2 = new Hand();
+
+    // insert card 1 and card 2 into hand 1 and hand 2 respectively
+    hand1.insert(card1);
+    hand2.insert(card2);
+
+    // copy the players hands as they are from state
+    const playersHands = this.state.playersHands;
+
+    // remove the hands to be split
+    playersHands.splice(handIndex, 1);
+
+    // push the new hands into the player's hands array
+    playersHands.push(hand1);
+    playersHands.push(hand2);
+
+    // update state
+    this.setState({
+      playersHands,
+    });
   }
 
   render() {
+    console.log(this.state);
+
     return (
       <div className="blackjack">
         <GameHeader
@@ -167,7 +292,14 @@ class BlackJack extends Component {
           playersHands={this.state.playersHands}
         />
         <Controls
+          canHit={this.canHit()}
           hit={this.hit}
+          canStand={this.canStand()}
+          stand={this.stand}
+          canDouble={this.canDouble()}
+          double={this.double}
+          canSplit={this.canSplit()}
+          split={this.split}
         />
       </div>
     );
