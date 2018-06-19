@@ -64,6 +64,14 @@ class Hand extends Component {
       <div
         className="hand"
         ref={(thisHand) => { this.thisHand = thisHand; }}
+        style={this.props.highlightActive 
+          ? {
+            border: "solid gold",
+            marginLeft: "5px",
+            marginRight: "5px",
+            animation: "blink 1s step-end infinite alternate",
+          } 
+          : {}}
       >
         {this.props.cards && this.state.containerHeight
           ? this.props.cards.map((card, index) => {
@@ -89,6 +97,7 @@ class Hand extends Component {
 
 Hand.propTypes = {
   cards: PropTypes.array.isRequired,
+  highlightActive: PropTypes.bool,
   isDealer: PropTypes.bool,
   isDealersTurn: PropTypes.bool,
 };

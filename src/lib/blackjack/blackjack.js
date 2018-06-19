@@ -70,6 +70,7 @@ class BlackJack extends Component {
   // check for existing blackjack state in localstorage
   hasStateInLocalStorage() {
     // check for relevent keys to make sure there is a valid game state in local storage somewhere.
+    // this allows existing gamestates to be overwritten if the game is updated with new needs.
     return (
       localStorage.getItem("funds") !== null &&
       localStorage.getItem("bet") !== null &&
@@ -220,7 +221,7 @@ class BlackJack extends Component {
     const funds = this.state.funds - this.state.bet;
     const bet = this.state.bet * 2;
 
- 
+
     hands[handIndex].insert(shoe.draw());
     hands[handIndex].stand = true;
 
@@ -290,6 +291,8 @@ class BlackJack extends Component {
           placeBet={() => { this.placeBet(); }}
           dealersHand={this.state.dealersHand}
           playersHands={this.state.playersHands}
+          shouldHighlight={this.state.playersHands.length > 1}
+          highlightIndex={this.state.activeHand}
         />
         <Controls
           canHit={this.canHit()}

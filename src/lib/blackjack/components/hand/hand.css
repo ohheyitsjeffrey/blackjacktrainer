@@ -6,7 +6,11 @@
   flex: 1;
   height: 80%;
   justify-content: center; 
-  margin: auto;
+  /* margin: auto; */
   min-width: 0;
   overflow: visible;
+}
+
+@keyframes blink { 
+   50% { border-color: transparent; } 
 }

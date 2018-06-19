@@ -17,12 +17,13 @@
 
 .game-table-player,
 .game-table-dealer  {
-  align-items: stretch;
+  /* align-items: stretch; */
   display: flex;
   flex-direction: row;
   height: 50%;
   justify-content: center;
   width: 100%;
+  align-items: center;
 }
 
 .modal-container {

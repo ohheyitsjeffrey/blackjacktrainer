@@ -102,6 +102,9 @@ class GameTable extends Component {
     );
   }
 
+  highlight(index) {
+    return this.props.shouldHighlight && this.props.highlightIndex === index;
+  }
 
   render() {
     return (
@@ -127,6 +130,7 @@ class GameTable extends Component {
                     key={`player-hand-${index}`}
                     isDealer={false}
                     isDealersTurn={false}
+                    highlightActive={this.highlight(index)}
                   />);
                 })
                 : <div />
@@ -148,6 +152,8 @@ GameTable.propTypes = {
   placeBet: PropTypes.func,
   dealersHand: PropTypes.object,
   playersHands: PropTypes.array,
+  shouldHighlight: PropTypes.bool,
+  highlightIndex: PropTypes.number,
 };
 
 export default GameTable;
