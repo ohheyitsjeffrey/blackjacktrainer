@@ -178,3 +178,35 @@ test("Calling isBlackJack() On A Hand With More Than Two Cards Valued 21 Returns
 
   expect(newHand.isBlackJack()).toEqual(false);
 });
+
+test("Calling isResolved() On A Hand That Busts Returns True", () => {
+  const newHand = new Hand();
+
+  newHand.insert(new Card("hearts", "10"));
+  newHand.insert(new Card("hearts", "10"));
+  newHand.insert(new Card("spades", "6"));
+
+  expect(newHand.stand).toEqual(false);
+  expect(newHand.bust).toEqual(true);
+  expect(newHand.isResolved()).toEqual(true);
+});
+
+test("Calling isResolved() On A Hand That Stands Returns True", () => {
+  const newHand = new Hand();
+  newHand.stand = true;
+
+  expect(newHand.bust).toEqual(false);
+  expect(newHand.stand).toEqual(true);
+  expect(newHand.isResolved()).toEqual(true);
+});
+
+test("Calling isResolved() On A Hand That Has Not Bust Or Stood Returns False ", () => {
+  const newHand = new Hand();
+
+  newHand.insert(new Card("hearts", "10"));
+  newHand.insert(new Card("spades", "6"));
+
+  expect(newHand.stand).toEqual(false);
+  expect(newHand.bust).toEqual(false);
+  expect(newHand.isResolved()).toEqual(false);
+});

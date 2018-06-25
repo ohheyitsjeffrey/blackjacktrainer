@@ -56,4 +56,8 @@ export default class Hand {
   length() {
     return this.cards.length;
   }
+
+  isResolved() {
+    return this.bust || this.stand;
+  }
 }

@@ -116,7 +116,7 @@ class GameTable extends Component {
                 ? <Hand
                   cards={this.props.dealersHand.cards}
                   isDealer={true}
-                  isDealersTurn={false}
+                  isDealersTurn={this.props.isDealersTurn}
                 />
                 : <div />
               }
@@ -154,6 +154,7 @@ GameTable.propTypes = {
   playersHands: PropTypes.array,
   shouldHighlight: PropTypes.bool,
   highlightIndex: PropTypes.number,
+  isDealersTurn: PropTypes.bool,
 };
 
 export default GameTable;

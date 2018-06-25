@@ -1,11 +1,13 @@
 import React, { Component } from "react";
+import _ from "lodash";
 
 import Controls from "./components/controls/controls.js";
 import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
-import Shoe from "./classes/shoe/shoe.js";
-import Hand from "./classes/hand/hand.js";
+import Shoe from "./engine/shoe/shoe.js";
+import Hand from "./engine/hand/hand.js";
+import GameUtils from "./engine/gameUtils.js";
 
 import "./blackjack.css";
 
@@ -25,12 +27,17 @@ class BlackJack extends Component {
     this.hasStateInLocalStorage = this.hasStateInLocalStorage.bind(this);
     this.writeGameStateToLocalStorage = this.writeGameStateToLocalStorage.bind(this);
 
+    this.evaluateGameState = this.evaluateGameState.bind(this);
+    this.getPlayersNextHand = this.getPlayersNextHand.bind(this);
+    this.dealersTurn = this.dealersTurn.bind(this);
+    this.settleRound = this.settleRound.bind(this);
+    this.updateAndStartNewRound = this.updateAndStartNewRound.bind(this);
+
     // game table actions
     this.incrementBet = this.incrementBet.bind(this);
     this.decrementBet = this.decrementBet.bind(this);
     this.placeBet = this.placeBet.bind(this);
     this.dealNewRound = this.dealNewRound.bind(this);
-    this.buyInsurance = this.buyInsurance.bind(this);
 
     // controls 
     this.hit = this.hit.bind(this);
@@ -43,7 +50,6 @@ class BlackJack extends Component {
     this.canStand = this.canStand.bind(this);
     this.canDouble = this.canDouble.bind(this);
     this.canSplit = this.canSplit.bind(this);
-
   }
 
   createNewState() {
@@ -107,6 +113,92 @@ class BlackJack extends Component {
     };
   }
 
+  componentDidUpdate() {
+    // this lives here to ensure it is called anytime state updates.  It is it's 
+    // own function because that makes it easier to test.
+    this.evaluateGameState();
+  }
+
+  // A common function to evaluate the state of the game and determine what if 
+  // anything to do next.  Needs a better name but so do plenty of things...
+  evaluateGameState() {
+    // The game just started and a bet has not been placed 
+    if (!this.state.betPlaced) {
+      // just wait for bet to be placed
+      return;
+    }
+
+    // player's turn
+    if (this.state.isPlayersTurn) {
+      // is the player's hand finished?  If so look to see if they have another 
+      // hand from a split to play.  If they do make it active.  If not, then it
+      // should be the dealer's turn 
+      const playersHands = this.state.playersHands;
+      let activeHand = this.state.activeHand;
+
+      if (playersHands[activeHand].isResolved()) {
+        const nextHand = this.getPlayersNextHand();
+        if (nextHand < 0) {
+          this.setState({
+            isPlayersTurn: false,
+            isDealersTurn: true,
+          });
+        } else {
+          this.setState({
+            activeHand: nextHand,
+          });
+        }
+      }
+      return;
+    }
+
+    // is the dealer's turn
+    if (this.state.isDealersTurn && !this.state.dealersHand.isResolved()) {
+      this.dealersTurn();
+      return;
+    }
+
+    if (this.state.dealersHand.isResolved()) {
+      this.settleRound();
+    }
+  }
+
+  settleRound() {
+    const playersHands = this.state.playersHands;
+    const dealersHand = this.state.dealersHand;
+    const bet = this.state.bet;
+
+    let payout = 0;
+
+    _.forEach(playersHands, (hand) => {
+      payout += GameUtils.calcPayout(hand, dealersHand, bet);
+    });
+
+    (this.state.funds + payout) >= this.state.options.minimumBet
+      ? this.updateAndStartNewRound(payout)
+      : this.createNewState();
+  }
+
+  updateAndStartNewRound(payout) {
+    this.setState((prevState) => ({
+      funds: prevState.funds + payout,
+      betPlaced: false,
+      bet: prevState.options.minimumBet,
+      isPlayersTurn: false,
+      isDealersTurn: false,
+      dealersHand: undefined,
+      playersHands: [],
+    }));
+  }
+
+  // if a player has split and has multiple hands, get the first one that is not resolved
+  getPlayersNextHand() {
+    const playersHands = this.state.playersHands;
+    return _.findIndex(playersHands, (hand) => {
+      return !hand.isResolved();
+    });
+  }
+
   writeGameStateToLocalStorage() {
     localStorage.setItem("funds", this.state.funds);
     localStorage.setItem("bet", this.state.bet);
@@ -137,11 +229,8 @@ class BlackJack extends Component {
       betPlaced: true,
       funds: prevState.funds - prevState.bet,
     }));
+
     this.dealNewRound();
-  }
-
-  buyInsurance() {
-
   }
 
   dealNewRound() {
@@ -159,6 +248,27 @@ class BlackJack extends Component {
       playersHands: [player],
       isPlayersTurn: true,
     });
+  }
+
+  dealersTurn() {
+    const dealersHand = this.state.dealersHand;
+    const shoe = this.state.shoe;
+
+    if (dealersHand.value < 17) {
+      dealersHand.insert(shoe.draw());
+
+      this.setState({
+        dealersHand,
+        shoe,
+      });
+    } else {
+      dealersHand.stand = true;
+      this.setState({
+        dealersHand,
+        shoe,
+        dealersTurn: false,
+      });
+    }
   }
 
   canHit() {
@@ -236,6 +346,10 @@ class BlackJack extends Component {
   canSplit() {
     const handIndex = this.state.activeHand;
 
+    if (!this.state.playersHands[handIndex] || !this.state.playersHands[handIndex]) {
+      return false;
+    }
+
     const firstCard = this.state.playersHands[handIndex].cards[0];
     const secondCard = this.state.playersHands[handIndex].cards[1];
 
@@ -247,6 +361,9 @@ class BlackJack extends Component {
 
   split() {
     const handIndex = this.state.activeHand;
+    const funds = this.state.funds - this.state.bet;
+    const bet = this.state.bet * 2;
+
     // get card 1 and 2 from the current hand to be split
     const card1 = this.state.playersHands[handIndex].cards[0];
     const card2 = this.state.playersHands[handIndex].cards[1];
@@ -272,11 +389,13 @@ class BlackJack extends Component {
     // update state
     this.setState({
       playersHands,
+      funds,
+      bet,
     });
   }
 
   render() {
-    console.log(this.state);
+    console.log(this.state)
 
     return (
       <div className="blackjack">
@@ -291,8 +410,9 @@ class BlackJack extends Component {
           placeBet={() => { this.placeBet(); }}
           dealersHand={this.state.dealersHand}
           playersHands={this.state.playersHands}
-          shouldHighlight={this.state.playersHands.length > 1}
+          shouldHighlight={this.state.isPlayersTurn && this.state.playersHands.length > 1}
           highlightIndex={this.state.activeHand}
+          isDealersTurn={this.state.isDealersTurn}
         />
         <Controls
           canHit={this.canHit()}

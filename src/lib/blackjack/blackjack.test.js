@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import BlackJack from "./blackjack.js";
-import Shoe from "./classes/shoe/shoe.js";
+import Shoe from "./engine/shoe/shoe.js";
 
 beforeEach(() => {
   localStorage.clear();
