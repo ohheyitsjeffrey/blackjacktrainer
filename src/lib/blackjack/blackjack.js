@@ -32,6 +32,7 @@ class BlackJack extends Component {
     this.dealersTurn = this.dealersTurn.bind(this);
     this.settleRound = this.settleRound.bind(this);
     this.updateAndStartNewRound = this.updateAndStartNewRound.bind(this);
+    this.clickToStartNextRound = this.clickToStartNextRound.bind(this);
 
     // game table actions
     this.incrementBet = this.incrementBet.bind(this);
@@ -70,6 +71,7 @@ class BlackJack extends Component {
       activeHand: 0,
       isPlayersTurn: false,
       isDealersTurn: false,
+      waitForPlayerClick: false,
     };
   }
 
@@ -158,7 +160,8 @@ class BlackJack extends Component {
       return;
     }
 
-    if (this.state.dealersHand.isResolved()) {
+    // the round is over, settle each hand and wait for user input
+    if (this.state.dealersHand.isResolved() && !this.state.waitForPlayerClick) {
       this.settleRound();
     }
   }
@@ -174,20 +177,27 @@ class BlackJack extends Component {
       payout += GameUtils.calcPayout(hand, dealersHand, bet);
     });
 
-    (this.state.funds + payout) >= this.state.options.minimumBet
-      ? this.updateAndStartNewRound(payout)
+    this.setState(prevState => ({
+      funds: prevState.funds + payout,
+      waitForPlayerClick: true,
+    }));
+  }
+
+  clickToStartNextRound(){
+    this.state.waitForPlayerClick
+      ? this.updateAndStartNewRound()
       : this.createNewState();
   }
 
-  updateAndStartNewRound(payout) {
+  updateAndStartNewRound() {
     this.setState((prevState) => ({
-      funds: prevState.funds + payout,
       betPlaced: false,
       bet: prevState.options.minimumBet,
       isPlayersTurn: false,
       isDealersTurn: false,
       dealersHand: undefined,
       playersHands: [],
+      waitForPlayerClick: false,
     }));
   }
 
@@ -395,24 +405,24 @@ class BlackJack extends Component {
   }
 
   render() {
-    console.log(this.state)
-
     return (
       <div className="blackjack">
         <GameHeader
           funds={this.state.funds}
+          disableMenu={!this.state.betPlaced}
         />
         <GameTable
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
-          incrementBet={() => { this.incrementBet(); }}
-          decrementBet={() => { this.decrementBet(); }}
-          placeBet={() => { this.placeBet(); }}
+          clickToStartNextRound={this.clickToStartNextRound}
           dealersHand={this.state.dealersHand}
+          decrementBet={() => { this.decrementBet(); }}
+          highlightIndex={this.state.activeHand}
+          incrementBet={() => { this.incrementBet(); }}
+          isDealersTurn={this.state.isDealersTurn}
+          placeBet={() => { this.placeBet(); }}
           playersHands={this.state.playersHands}
           shouldHighlight={this.state.isPlayersTurn && this.state.playersHands.length > 1}
-          highlightIndex={this.state.activeHand}
-          isDealersTurn={this.state.isDealersTurn}
         />
         <Controls
           canHit={this.canHit()}

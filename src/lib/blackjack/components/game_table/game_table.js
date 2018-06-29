@@ -109,7 +109,9 @@ class GameTable extends Component {
   render() {
     return (
       <div className="modal-container" >
-        <div className="game-table game-table-container">
+        <div className="game-table game-table-container"
+          onClick={this.props.clickToStartNextRound}
+        >
           <div className="game-table game-table-inner">
             <div className="game-table game-table-dealer">
               {this.props.dealersHand
@@ -155,6 +157,7 @@ GameTable.propTypes = {
   shouldHighlight: PropTypes.bool,
   highlightIndex: PropTypes.number,
   isDealersTurn: PropTypes.bool,
+  clickToStartNextRound: PropTypes.func,
 };
 
 export default GameTable;

@@ -16,6 +16,7 @@ class GameHeader extends Component {
           <DropdownButton
             title="menu"
             pullRight={true}
+            disabled={this.props.disableMenu}
             id="game-options-menu"
           // key={i}
           >
@@ -32,6 +33,7 @@ class GameHeader extends Component {
 
 GameHeader.propTypes = {
   funds: PropTypes.number.isRequired,
+  disableMenu: PropTypes.bool.isRequired,
 };
 
 
