@@ -23,7 +23,10 @@ class GameHeader extends Component {
             <MenuItem eventKey="1">Options</MenuItem>
             <MenuItem eventKey="2">About</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey="4">Restart Game</MenuItem>
+            <MenuItem eventKey="4"
+            >
+              New Game
+            </MenuItem>
           </DropdownButton>
         </div>
       </div>
@@ -35,6 +38,5 @@ GameHeader.propTypes = {
   funds: PropTypes.number.isRequired,
   disableMenu: PropTypes.bool.isRequired,
 };
-
 
 export default GameHeader;

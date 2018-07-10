@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Button, Modal } from "react-bootstrap";
 
 import Hand from "../hand/hand.js";
+import MessageOverlay from "./message_overlay/message_overlay.js";
 
 import "./game_table.css";
 
@@ -10,22 +11,15 @@ class GameTable extends Component {
   constructor(props, context) {
     super(props, context);
 
-
     this.incrementBet = this.incrementBet.bind(this);
     this.decrementBet = this.decrementBet.bind(this);
     this.placeBet = this.placeBet.bind(this);
-
     this.showModal = this.showModal.bind(this);
     this.renderModal = this.renderModal.bind(this);
-
-    this.state = {
-      // showModal: true,
-    };
   }
 
   placeBet() {
     this.props.placeBet();
-    // this.toggleModal();
   }
 
   incrementBet() {
@@ -113,6 +107,10 @@ class GameTable extends Component {
           onClick={this.props.clickToStartNextRound}
         >
           <div className="game-table game-table-inner">
+            {
+              this.props.waitForPlayerClick &&
+              <MessageOverlay message="Click To Start Next Round" />
+            }
             <div className="game-table game-table-dealer">
               {this.props.dealersHand
                 ? <Hand
@@ -122,7 +120,6 @@ class GameTable extends Component {
                 />
                 : <div />
               }
-
             </div>
             <div className="game-table game-table-player">
               {this.props.playersHands
@@ -158,6 +155,7 @@ GameTable.propTypes = {
   highlightIndex: PropTypes.number,
   isDealersTurn: PropTypes.bool,
   clickToStartNextRound: PropTypes.func,
+  waitForPlayerClick: PropTypes.bool,
 };
 
 export default GameTable;

@@ -7,12 +7,19 @@
 }
 
 .game-table-inner {
-  bottom: 0;
   flex-direction: column;
-  left: 0;
   position: absolute;
+  bottom: 0;
+  left: 0;
   right: 0;
   top: 0;
+}
+
+.click-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .game-table-player,

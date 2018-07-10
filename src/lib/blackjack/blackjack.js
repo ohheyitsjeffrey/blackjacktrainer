@@ -191,6 +191,7 @@ class BlackJack extends Component {
 
   updateAndStartNewRound() {
     this.setState((prevState) => ({
+      activeHand: 0,
       betPlaced: false,
       bet: prevState.options.minimumBet,
       isPlayersTurn: false,
@@ -286,7 +287,7 @@ class BlackJack extends Component {
 
     return this.state.isPlayersTurn &&              // it is the players turn
       this.state.playersHands.length > 0 &&         // the player has been dealt cards
-      !this.state.playersHands[handIndex].bust &&   // current hand is not busted
+      !this.state.playersHands[handIndex].bust &&   // current hand is not bust
       !this.state.playersHands[handIndex].stand;    // current hand is not standing either
   }
 
@@ -415,6 +416,7 @@ class BlackJack extends Component {
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
           clickToStartNextRound={this.clickToStartNextRound}
+          waitForPlayerClick={this.state.waitForPlayerClick}
           dealersHand={this.state.dealersHand}
           decrementBet={() => { this.decrementBet(); }}
           highlightIndex={this.state.activeHand}

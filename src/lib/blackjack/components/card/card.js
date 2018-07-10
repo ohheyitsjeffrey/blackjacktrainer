@@ -78,7 +78,6 @@ Card.propTypes = {
   willOverflow: PropTypes.bool.isRequired,
   handSize: PropTypes.number.isRequired,
   zIndex: PropTypes.number.isRequired,
-
 };
 
 export default Card;
