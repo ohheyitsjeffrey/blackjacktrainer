@@ -58,17 +58,15 @@ class Hand extends Component {
     }
   }
 
-
   render() {
     return (
       <div
         className="hand"
+        onClick={this.props.onClick}
         ref={(thisHand) => { this.thisHand = thisHand; }}
         style={this.props.highlightActive 
           ? {
             border: "solid gold",
-            marginLeft: "5px",
-            marginRight: "5px",
             animation: "blink 1s step-end infinite alternate",
           } 
           : {}}
@@ -77,7 +75,7 @@ class Hand extends Component {
           ? this.props.cards.map((card, index) => {
             return (
               <Card
-                height={this.state.containerHeight}
+                height={this.state.containerHeight - 10}
                 isFlipped={this.props.isDealer && !this.props.isDealersTurn && index === 0}
                 key={index}
                 suit={card.suit}
@@ -100,6 +98,7 @@ Hand.propTypes = {
   highlightActive: PropTypes.bool,
   isDealer: PropTypes.bool,
   isDealersTurn: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 

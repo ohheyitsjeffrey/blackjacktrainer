@@ -16,6 +16,7 @@ class GameTable extends Component {
     this.placeBet = this.placeBet.bind(this);
     this.showModal = this.showModal.bind(this);
     this.renderModal = this.renderModal.bind(this);
+    // this.selectHand = this.selectHand.bind(this);
   }
 
   placeBet() {
@@ -100,6 +101,10 @@ class GameTable extends Component {
     return this.props.shouldHighlight && this.props.highlightIndex === index;
   }
 
+  selectHand(index) {
+    this.props.clickToSelectHand(index);
+  }
+
   render() {
     return (
       <div className="modal-container" >
@@ -124,13 +129,19 @@ class GameTable extends Component {
             <div className="game-table game-table-player">
               {this.props.playersHands
                 ? this.props.playersHands.map((hand, index) => {
-                  return (<Hand
-                    cards={hand.cards}
-                    key={`player-hand-${index}`}
-                    isDealer={false}
-                    isDealersTurn={false}
-                    highlightActive={this.highlight(index)}
-                  />);
+                  return (
+                    <Hand
+                      onClick={()=> {this.selectHand(index)}}
+                      cards={hand.cards}
+                      key={`player-hand-${index}`}
+                      isDealer={false}
+                      isDealersTurn={false}
+                      highlightActive={this.highlight(index)}
+                      handIndex={index}
+                      clickToSelectHand={this.props.clickToSelectHand}
+                    />
+                  );
+
                 })
                 : <div />
               }
@@ -156,6 +167,7 @@ GameTable.propTypes = {
   isDealersTurn: PropTypes.bool,
   clickToStartNextRound: PropTypes.func,
   waitForPlayerClick: PropTypes.bool,
+  clickToSelectHand: PropTypes.func,
 };
 
 export default GameTable;

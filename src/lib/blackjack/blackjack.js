@@ -33,6 +33,7 @@ class BlackJack extends Component {
     this.settleRound = this.settleRound.bind(this);
     this.updateAndStartNewRound = this.updateAndStartNewRound.bind(this);
     this.clickToStartNextRound = this.clickToStartNextRound.bind(this);
+    this.clickToSelectHand = this.clickToSelectHand.bind(this);
 
     // game table actions
     this.incrementBet = this.incrementBet.bind(this);
@@ -111,7 +112,7 @@ class BlackJack extends Component {
       shoe: restoredShoe,
       dealersHand: new Hand(),
       playersHands: [new Hand()],
-      playersHandIndex: 0,
+      activeHand: 0,
     };
   }
 
@@ -187,6 +188,14 @@ class BlackJack extends Component {
     this.state.waitForPlayerClick
       ? this.updateAndStartNewRound()
       : this.createNewState();
+  }
+
+  clickToSelectHand(index) {
+    if (!this.state.playersHands[index].isResolved()) {
+      this.setState({
+        activeHand: index,
+      });
+    }
   }
 
   updateAndStartNewRound() {
@@ -425,6 +434,7 @@ class BlackJack extends Component {
           placeBet={() => { this.placeBet(); }}
           playersHands={this.state.playersHands}
           shouldHighlight={this.state.isPlayersTurn && this.state.playersHands.length > 1}
+          clickToSelectHand={this.clickToSelectHand}
         />
         <Controls
           canHit={this.canHit()}

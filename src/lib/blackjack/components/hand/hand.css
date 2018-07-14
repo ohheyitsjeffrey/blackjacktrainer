@@ -1,16 +1,21 @@
 .hand {
   align-content: center;
+  border: solid transparent 3px;
   display: inline-flex;
   flex-grow: 1;
   flex-shrink: 1;
   flex: 1;
   height: 80%;
   justify-content: center; 
-  /* margin: auto; */
   min-width: 0;
   overflow: visible;
+  marginLeft: "5px";
+  marginRight: "5px";
+
 }
 
 @keyframes blink { 
-   50% { border-color: transparent; } 
+    50% { 
+      border-color: transparent; 
+    } 
 }
