@@ -9,9 +9,8 @@
   justify-content: center; 
   min-width: 0;
   overflow: visible;
-  marginLeft: "5px";
-  marginRight: "5px";
-
+  margin-left: "5px";
+  margin-right: "5px";
 }
 
 @keyframes blink { 
