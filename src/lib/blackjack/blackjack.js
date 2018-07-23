@@ -26,8 +26,8 @@ class BlackJack extends Component {
     this.restoreState = this.restoreState.bind(this);
     this.hasStateInLocalStorage = this.hasStateInLocalStorage.bind(this);
     this.writeGameStateToLocalStorage = this.writeGameStateToLocalStorage.bind(this);
-
     this.evaluateGameState = this.evaluateGameState.bind(this);
+
     this.getPlayersNextHand = this.getPlayersNextHand.bind(this);
     this.dealersTurn = this.dealersTurn.bind(this);
     this.settleRound = this.settleRound.bind(this);
@@ -374,7 +374,7 @@ class BlackJack extends Component {
     const secondCard = this.state.playersHands[handIndex].cards[1];
 
     return this.state.isPlayersTurn &&                              // it is the player's turn
-      this.state.playersHands.length > 0 &&                         // the player has a hand
+      this.state.playersHands.length < 2 &&                         // single splits for now
       this.state.playersHands[handIndex].cards.length === 2 &&      // hand has not hit
       firstCard.cardValue() === secondCard.cardValue();             // the cards are of equal value
   }
