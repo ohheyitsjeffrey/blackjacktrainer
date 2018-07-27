@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import cardSvgs from "./svg/card_index.js";
 
 class Card extends Component {
   constructor(props) {
@@ -53,17 +54,17 @@ class Card extends Component {
   }
 
   render() {
-    const cardSVG = `${this.props.value}_of_${this.props.suit}`;
-
     return (
       <img
         ref={(thisCard) => { this.thisCard = thisCard; }}
         height={this.props.height}
         src={this.props.isFlipped
-          ? "svg/card_back.svg"
-          : `svg/${cardSVG}.svg`
+          ? cardSvgs.getCardBack()
+          : cardSvgs.getCardSvg(this.props.value, this.props.suit)
         }
-        alt=""
+        alt={this.props.isFlipped
+          ? "card back"
+          : `${this.props.value} of ${this.props.suit}`}
         style={this.getCardStyles()}
       />
     );
