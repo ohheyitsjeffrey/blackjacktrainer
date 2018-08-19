@@ -1,6 +1,6 @@
-import Card from "./card/card.js";
-import Hand from "./hand/hand.js";
-import GameUtils from "./gameUtils.js";
+import Card from "../card/card.js";
+import Hand from "../hand/hand.js";
+import GameUtils from "./index.js";
 
 it("calcPayout() returns 0 when dealer's hand > players", () => {
   const playersHand = new Hand(); 

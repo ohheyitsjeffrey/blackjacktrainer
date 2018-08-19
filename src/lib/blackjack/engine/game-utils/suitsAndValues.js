@@ -1,5 +1,5 @@
 // The cannonical suites and values
-export const suitsAndValues = {
+const suitsAndValues = {
   suits: [
     "hearts",
     "diamonds",
@@ -22,3 +22,5 @@ export const suitsAndValues = {
     "ace"
   ],
 };
+
+export default suitsAndValues;

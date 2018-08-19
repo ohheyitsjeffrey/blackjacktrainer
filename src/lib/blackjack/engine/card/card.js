@@ -1,13 +1,16 @@
-import { suitsAndValues } from "../suitsAndValues.js";
+import GameUtils from "../game-utils";
+
+const suits = GameUtils.suits;
+const values = GameUtils.values;
 
 class Card {
   constructor(suit, value) {
     
-    if (!suitsAndValues.suits.includes(suit)) {
-      throw new Error(`Not a valid card suit.  Valid suites are: ${suitsAndValues.suits}`);
+    if (!suits.includes(suit)) {
+      throw new Error(`Not a valid card suit.  Valid suites are: ${suits}`);
     }
-    if (!suitsAndValues.values.includes(value)) {
-      throw new Error(`Not a valid card value.  Valid values are: ${suitsAndValues.values}`);
+    if (!values.includes(value)) {
+      throw new Error(`Not a valid card value.  Valid values are: ${values}`);
     }
 
     this.suit = suit;

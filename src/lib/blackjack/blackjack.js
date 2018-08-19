@@ -7,7 +7,7 @@ import GameTable from "./components/game_table/game_table.js";
 
 import Shoe from "./engine/shoe/shoe.js";
 import Hand from "./engine/hand/hand.js";
-import GameUtils from "./engine/gameUtils.js";
+import GameUtils from "./engine/game-utils";
 
 import "./blackjack.css";
 
