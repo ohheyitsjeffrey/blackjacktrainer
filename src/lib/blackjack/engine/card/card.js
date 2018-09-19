@@ -5,7 +5,7 @@ const values = GameUtils.values;
 
 class Card {
   constructor(suit, value) {
-    
+
     if (!suits.includes(suit)) {
       throw new Error(`Not a valid card suit.  Valid suites are: ${suits}`);
     }
@@ -26,6 +26,7 @@ class Card {
     return this.value;
   }
 
+  // returns a string of the json object of the card for restoring shoes and hands
   toString() {
     return JSON.stringify({
       suit: this.suit,
