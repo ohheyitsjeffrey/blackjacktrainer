@@ -20,24 +20,17 @@ export default class Hand {
     // eslint indent is throwing a fit on this switch and I don't want to deal with it.
     /* eslint-disable indent */
     this.cards.forEach(card => {
-      switch (card.value) {
-        case "ace":
+        if (card.cardValue() === "ace"){
           flexibleAces += 1;
           this.value += 11;
-          break;
-        case "jack":
-        case "queen":
-        case "king":
-          this.value += 10;
-          break;
-        default:
-          this.value += parseInt(card.value, 10);
-          break;
+        }
+        else {
+          this.value += parseInt(card.cardValue(), 10);
       }
     });
     /* eslint-enable indent */
     // up until this point we have assumed all aces are value 11.  If this causes the hand to
-    // bust, we want to reduce their values one by one to 1 until the hand is no longer over 21.        
+    // bust, we want to reduce their values one by one to 1 until the hand is no longer over 21.
     while (flexibleAces > 0 && this.value > 21) {
       this.value -= 10;
       flexibleAces -= 1;
@@ -52,7 +45,7 @@ export default class Hand {
   isBlackJack() {
     return (this.cards.length === 2 && this.value === 21);
   }
-  
+
   length() {
     return this.cards.length;
   }

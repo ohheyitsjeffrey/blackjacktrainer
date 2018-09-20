@@ -1,3 +1,4 @@
+import _ from "lodash";
 import Hand from "./hand.js";
 import Card from "../card/card.js";
 
@@ -209,4 +210,106 @@ test("Calling isResolved() On A Hand That Has Not Bust Or Stood Returns False ",
   expect(newHand.stand).toEqual(false);
   expect(newHand.bust).toEqual(false);
   expect(newHand.isResolved()).toEqual(false);
+});
+
+test("Hand can be cloneDeeped by lodash", () => {
+  const hand = new Hand();
+  const newHand = _.clone(hand);
+
+  expect(newHand.value === hand.value).toBe(true);
+  // is not the same instance of the card
+  expect(newHand == hand).toEqual(false);
+});
+
+test("Hand can be cloneDeeped by lodash", () => {
+  const hand = new Hand();
+  const newHand = _.clone(hand);
+
+  // both have value (we will test functions later)
+  expect(newHand.value === hand.value).toBe(true);
+  // is not the same instance of the card
+  expect(newHand == hand).toEqual(false);
+});
+
+test("insert() works after being cloneDeeped by lodash", () => {
+  const hand = new Hand();
+  const newHand = _.clone(hand);
+  const card = new Card("spades", "5");
+
+  // initial value is 0
+  expect(newHand.value).toBe(0);
+  newHand.insert(card);
+
+  expect(newHand.value).toBe(5);
+});
+
+test("isBlackJack() works after being cloneDeeped by lodash", () => {
+  const hand = new Hand();
+  const newHand1 = _.cloneDeep(hand);
+  const newHand2 = _.cloneDeep(hand);
+
+  const card1 = new Card("spades", "10");
+  const card2 = new Card("spades", "ace");
+  const card3 = new Card("spades", "5");
+  const card4 = new Card("spades", "6");
+
+  // newHand1 will equal 21 but not be a blackjack
+  newHand1.insert(card1);
+  newHand1.insert(card3);
+  newHand1.insert(card4);
+
+  // newHand2 will be a blackjack
+  newHand2.insert(card1);
+  newHand2.insert(card2);
+
+  // both should have a value of 21
+  expect(newHand1.value).toBe(21);
+  expect(newHand2.value).toBe(21);
+
+  // newHand1 should not be blackjack
+  expect(newHand1.isBlackJack()).toBe(false);
+
+  // newHand2 should be blackjack
+  expect(newHand2.isBlackJack()).toBe(true);
+});
+
+test("length() works after being cloneDeeped by lodash", () => {
+  const hand = new Hand();
+  const newHand1 = _.cloneDeep(hand);
+  const newHand2 = _.cloneDeep(hand);
+
+  const card = new Card("spades", "10");
+
+  // newHand1 will have length 1
+  newHand1.insert(card);
+
+  // newHand2 will have length 2
+  newHand2.insert(card);
+  newHand2.insert(card);
+
+  // verify the method works and that they are different objects
+  expect(hand.length()).toBe(0);
+  expect(newHand1.length()).toBe(1);
+  expect(newHand2.length()).toBe(2);
+});
+
+test("isResolved() works after being cloneDeeped by lodash", () => {
+  const hand = new Hand();
+  const newHand1 = _.cloneDeep(hand);
+  const newHand2 = _.cloneDeep(hand);
+
+  const card = new Card("spades", "10");
+
+  // this hand should bust
+  newHand1.insert(card);
+  newHand1.insert(card);
+  newHand1.insert(card);
+
+  // this hand will stand
+  newHand2.stand = true;
+
+  // verify the method works and that they are different objects
+  expect(hand.isResolved()).toBe(false);
+  expect(newHand1.isResolved()).toBe(true);
+  expect(newHand2.isResolved()).toBe(true);
 });

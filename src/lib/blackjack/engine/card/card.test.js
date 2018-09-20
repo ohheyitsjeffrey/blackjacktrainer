@@ -85,12 +85,12 @@ test("cardValue() Returns 'ace' For Ace Cards ", () => {
   expect(cardValue).toEqual("ace");
 });
 
-test("Card can be cloned by lodash", () => {
+test("Card can be cloneDeeped by lodash", () => {
   const suit = "diamonds";
   const value = "5";
 
   const card = new Card(suit, value);
-  const newCard = _.clone(card);
+  const newCard = _.cloneDeep(card);
 
   // value and suit are the same
   expect(newCard.value === value).toEqual(true);
@@ -100,26 +100,41 @@ test("Card can be cloned by lodash", () => {
   expect(newCard == card).toEqual(false);
 });
 
-test("Card instance function cardValue() works after being cloned by lodash", () => {
+test("Card instance function cardValue() works after being cloneDeeped by lodash", () => {
   const suit = "diamonds";
   const value = "5";
 
   const card = new Card(suit, value);
-  const newCard = _.clone(card);
+  const newCard = _.cloneDeep(card);
 
   // should return the card value as a string
   const cardValue = newCard.cardValue();
   expect(cardValue).toEqual("5");
 });
 
-test("Card instance function toString() works after being cloned by lodash", () => {
+test("Card instance function toString() works after being cloneDeeped by lodash", () => {
   const suit = "diamonds";
   const value = "5";
 
   const card = new Card(suit, value);
-  const newCard = _.clone(card);
+  const newCard = _.cloneDeep(card);
 
   // this toString should return a string representation of a JSON object with the cards suit and value
   const cardString = newCard.toString();
   expect(cardString).toEqual("{\"suit\":\"diamonds\",\"value\":\"5\"}");
+});
+
+test("Card can be cloneDeeped by lodash", () => {
+  const suit = "diamonds";
+  const value = "5";
+
+  const card = new Card(suit, value);
+  const newCard = _.cloneDeep(card);
+
+  // value and suit are the same
+  expect(newCard.value === value).toEqual(true);
+  expect(newCard.suit === suit).toEqual(true);
+
+  // is not the same instance of the card
+  expect(newCard == card).toEqual(false);
 });
