@@ -41,7 +41,7 @@ class BlackJack extends Component {
     this.placeBet = this.placeBet.bind(this);
     this.dealNewRound = this.dealNewRound.bind(this);
 
-    // controls 
+    // controls
     this.hit = this.hit.bind(this);
     this.stand = this.stand.bind(this);
     this.double = this.double.bind(this);
@@ -56,7 +56,6 @@ class BlackJack extends Component {
 
   createNewState() {
     const newShoe = new Shoe(8);
-    newShoe.shuffle();
 
     return {
       options: {
@@ -90,7 +89,7 @@ class BlackJack extends Component {
   }
 
   restoreState() {
-    // restore previous values from local storage 
+    // restore previous values from local storage
     const restoredFunds = parseInt(localStorage.getItem("funds"), 10);
     const restoredBet = parseInt(localStorage.getItem("bet"), 10);
     const restoredBetPlaced = localStorage.getItem("betPlaced");
@@ -117,15 +116,15 @@ class BlackJack extends Component {
   }
 
   componentDidUpdate() {
-    // this lives here to ensure it is called anytime state updates.  It is it's 
+    // this lives here to ensure it is called anytime state updates.  It is it's
     // own function because that makes it easier to test.
     this.evaluateGameState();
   }
 
-  // A common function to evaluate the state of the game and determine what if 
+  // A common function to evaluate the state of the game and determine what if
   // anything to do next.  Needs a better name but so do plenty of things...
   evaluateGameState() {
-    // The game just started and a bet has not been placed 
+    // The game just started and a bet has not been placed
     if (!this.state.betPlaced) {
       // just wait for bet to be placed
       return;
@@ -133,9 +132,9 @@ class BlackJack extends Component {
 
     // player's turn
     if (this.state.isPlayersTurn) {
-      // is the player's hand finished?  If so look to see if they have another 
+      // is the player's hand finished?  If so look to see if they have another
       // hand from a split to play.  If they do make it active.  If not, then it
-      // should be the dealer's turn 
+      // should be the dealer's turn
       const playersHands = this.state.playersHands;
       let activeHand = this.state.activeHand;
 
@@ -223,7 +222,7 @@ class BlackJack extends Component {
     localStorage.setItem("funds", this.state.funds);
     localStorage.setItem("bet", this.state.bet);
     localStorage.setItem("shoe", this.state.shoe.toString());
-    // write options object    
+    // write options object
     localStorage.setItem("options.minimumBet", this.state.options.minimumBet);
     localStorage.setItem("betPlaced", this.state.betPlaced);
   }
@@ -322,7 +321,7 @@ class BlackJack extends Component {
   }
 
   stand() {
-    // check to see if this is the last hand in the player's array,   
+    // check to see if this is the last hand in the player's array,
     const hands = this.state.playersHands;
     const handIndex = this.state.activeHand;
 

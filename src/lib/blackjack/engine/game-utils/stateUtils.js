@@ -62,7 +62,6 @@ export function restoreState() {
 
 export function createNewState() {
   const newShoe = new Shoe(8);
-  newShoe.shuffle();
 
   return {
     options: {

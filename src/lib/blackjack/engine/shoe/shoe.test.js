@@ -1,5 +1,8 @@
-import Shoe from "./shoe.js";
 import _ from "lodash";
+
+import Shoe from "./shoe.js";
+import Card from "../card/card.js";
+import GameUtils from "../game-utils";
 
 test("Creating A Shoe Of Size 1 Contains 52 Cards", () => {
   const shoe = new Shoe();
@@ -11,23 +14,30 @@ test("Creating A Shoe Of Size 8 Contains 416 Cards", () => {
   expect(shoe.cards.length).toEqual(416);
 });
 
-test("Shuffling A Shoe Randomizes The Shoe Order", () => {
+test("Shoe Order is Randomized", () => {
   const shoe = new Shoe(1);
-  const copyOfOriginalShoe = _.cloneDeep(shoe);
-  // original shoe and copyOfOriginalShoe have the same cards but are not the
-  // same object.
-  expect(shoe.cards).toEqual(copyOfOriginalShoe.cards);
-  expect(shoe.cards).not.toBe(copyOfOriginalShoe.cards);
-  // now shuffle shoe
-  shoe.shuffle();
-  // verify we didn't lose cards or just break the shoe  
-  expect(shoe.cards.length).toEqual(copyOfOriginalShoe.cards.length);
+  const deck = [];
+
+  const suits = GameUtils.suits;
+  const values = GameUtils.values;
+
+  // make a deck of 52 cards
+  suits.forEach(suit => {
+    values.forEach(value => {
+      deck.push(new Card(suit, value));
+    });
+  });
+
+  // verify they both have 52 cards
+  expect(deck.length).toEqual(52);
+  expect(shoe.cards.length).toEqual(52);
+
   // verify it has all the same cards
-  copyOfOriginalShoe.cards.forEach((card) => {
-    expect(shoe.cards).toContainEqual(card);
+  shoe.cards.forEach((card) => {
+    expect(deck).toContainEqual(card);
   });
   // finally verify they are not in the same order
-  expect(shoe.cards).not.toEqual(copyOfOriginalShoe.cards);
+  expect(shoe.cards).not.toEqual(deck);
 });
 
 test("Drawing A Card Returns 'Top' Card In Shoe", () => {
@@ -59,7 +69,7 @@ test("remainingCount() Method Accurately Returns Cards Total", () => {
   expect(shoeRemaining).toEqual(shoeLength);
 });
 
-test("toString() Returns String Of Array", () => {
+test("toString() Returns Array Of Strings", () => {
   const shoe = new Shoe();
   // convert the shoe to a string array
   const shoeString = shoe.toString();
@@ -67,12 +77,17 @@ test("toString() Returns String Of Array", () => {
   expect(typeof shoeString).toEqual("string");
 });
 
-test("toString() Values Reflect Those Of Original Array And Can Be Converted Back", () => {
+test("toString() Values Reflect Those Of Original Cards Array And Size And Can Be Converted Back", () => {
   const shoe = new Shoe();
   // convert the shoe to a string array
   const shoeString = shoe.toString();
   // now convert it back into an array of objects
   const stringToArray = JSON.parse(`[${shoeString}]`);
+
+  // verify the size object is intact
+  const shoeSizeObject = stringToArray.pop();
+  const shoeSize = parseInt(shoeSizeObject.size);
+  expect(shoeSize).toBe(1);
 
   // verify card data from string in indexes reflects original values.
   _.forEach(stringToArray, (cardData, index) => {
@@ -81,7 +96,7 @@ test("toString() Values Reflect Those Of Original Array And Can Be Converted Bac
   });
 });
 
-test("restoreFromString() Properly Restores Cards From toString() Backup", () => {
+test("restoreFromString() Properly Restores Cards And Size From toString() Backup", () => {
   const shoe = new Shoe();
   // convert the shoe to a string array
   const shoeString = shoe.toString();
@@ -91,5 +106,150 @@ test("restoreFromString() Properly Restores Cards From toString() Backup", () =>
   // verify cards are the same and in the same order
   _.forEach(restoredShoe, (restoredCard, index) => {
     expect(shoe.cards[index]).toEqual(restoredCard);
+  });
+
+  // verify the size is intact as well
+  expect(shoe.size).toBe(1);
+});
+
+test("Shoe Replenishes To Default Size When It Runs Out Of Cards", () => {
+  // make a shoe of default size 1
+  const shoe = new Shoe();
+
+  const card0 = new Card("spades", "5");
+  const card1 = new Card("diamonds", "6");
+
+  // shoe has two cards left
+  shoe.cards = [card0, card1];
+  expect(shoe.cards.length).toBe(2);
+
+  // draw those two cards
+  shoe.draw();
+  shoe.draw();
+  expect(shoe.cards.length).toBe(0);
+
+  // now try and draw a card against the empty shoe
+  const card = shoe.draw();
+
+  // new card should not be undefined
+  expect(card === undefined).toBe(false);
+
+  // shoe now has 51 cards
+  expect(shoe.cards.length).toBe(51);
+});
+
+test("Shoe Replenishes To Custom Size When It Runs Out Of Cards", () => {
+  // make a shoe of default size 1
+  const shoe = new Shoe(2);
+
+  const card0 = new Card("spades", "5");
+  const card1 = new Card("diamonds", "6");
+
+  // shoe has two cards left
+  shoe.cards = [card0, card1];
+  expect(shoe.cards.length).toBe(2);
+
+  // draw those two cards
+  shoe.draw();
+  shoe.draw();
+  expect(shoe.cards.length).toBe(0);
+
+  // now try and draw a card against the empty shoe
+  const card = shoe.draw();
+
+  // new card should not be undefined
+  expect(card === undefined).toBe(false);
+  // shoe should now have 103 cards
+  expect(shoe.cards.length).toBe(103);
+});
+
+test("Shoe can be cloneDeeped by lodash", () => {
+  const shoe = new Shoe(3);
+  const newShoe = _.clone(shoe);
+
+  // both have size 3
+  expect(newShoe.size).toBe(3);
+  expect(shoe.size).toBe(3);
+
+  // both cards arrays are of length
+  expect(newShoe.cards.length).toBe(156);
+  expect(shoe.cards.length).toBe(156);
+
+  // is not the same instance of the card
+  expect(shoe == newShoe).toEqual(false);
+});
+
+test("draw() works after being cloneDeeped by lodash", () => {
+  const shoe = new Shoe(3);
+  const newShoe = _.cloneDeep(shoe);
+
+  // both arrays have the same top card
+  expect(newShoe.cards[0]).toEqual(shoe.cards[0]);
+
+  // both have same card length
+  const shoeLength = shoe.cards.length;
+  const newLength =  newShoe.cards.length;
+
+  expect(shoeLength).toEqual(newLength);
+
+  // draw doesn't throw an error on either
+  const card =  shoe.draw();
+  const newCard = newShoe.draw();
+
+  // cards are equal and not undefined
+  expect(card).toEqual(newCard);
+  expect(card === undefined).toBe(false);
+  expect(newCard === undefined).toBe(false);
+
+  // each has one less card in their cards array
+  expect(shoe.cards.length).toEqual(shoeLength - 1);
+  expect(newShoe.cards.length).toEqual(newLength - 1);
+
+  // is not the same instance of the card
+  expect(shoe == newShoe).toEqual(false);
+});
+
+test("remainingCount() works after being cloneDeeped by lodash", () => {
+  const shoe = new Shoe(1);
+  const newShoe = _.cloneDeep(shoe);
+
+  const shoeLength = newShoe.cards.length;
+  const shoeRemaining = newShoe.remainingCount();
+
+  expect(shoeRemaining).toEqual(shoeLength);
+});
+
+test("toString() works after being cloneDeeped by lodash", () => {
+  const shoe = new Shoe();
+  const newShoe = _.cloneDeep(shoe);
+  // convert the shoe to a string array
+  const shoeString = newShoe.toString();
+  // now convert it back into an array of objects
+  const stringToArray = JSON.parse(`[${shoeString}]`);
+
+  // verify the size object is intact
+  const shoeSizeObject = stringToArray.pop();
+  const shoeSize = parseInt(shoeSizeObject.size);
+  expect(shoeSize).toBe(1);
+
+  // verify card data from string in indexes reflects original values.
+  _.forEach(stringToArray, (cardData, index) => {
+    expect(newShoe.cards[index].value).toEqual(cardData.value);
+    expect(newShoe.cards[index].suit).toEqual(cardData.suit);
+  });
+});
+
+test("restoreFromString() works after being cloneDeeped by lodash", () => {
+  const shoe = new Shoe();
+  const newShoe = _.cloneDeep(shoe);
+
+  // convert the shoe to a string array
+  const shoeString = newShoe.toString();
+  // now convert it back into a shoe
+  const restoredShoe = new Shoe().restoreFromString(shoeString);
+
+  // verify cards are the same and in the same order
+  _.forEach(restoredShoe, (restoredCard, index) => {
+    expect(newShoe.cards[index]).toEqual(restoredCard);
   });
 });
