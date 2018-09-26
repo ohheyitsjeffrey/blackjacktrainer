@@ -1,3 +1,6 @@
+import _ from "lodash";
+import Card from "../card/card.js";
+
 export default class Hand {
   constructor() {
     this.cards = [];
@@ -52,5 +55,34 @@ export default class Hand {
 
   isResolved() {
     return this.bust || this.stand;
+  }
+
+  toString() {
+    if (this.cards.length === 0) {
+      return "empty";
+    }
+    const stringArray = this.cards.map(card => {
+      return card.toString();
+    });
+
+    return stringArray.toString();
+  }
+
+  restoreFromString(stringArray) {
+    if(stringArray === "empty") {
+      this.cards = [];
+    } else {
+      const convertedArray = JSON.parse(`[${stringArray}]`);
+
+      _.forEach(convertedArray, (cardData) => {
+        // convert the card data string back to a card object
+        let card = new Card(
+          cardData.suit,
+          cardData.value
+        );
+        // now restore the card to the cards array
+        this.insert(card);
+      });
+    }
   }
 }

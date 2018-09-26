@@ -5,7 +5,6 @@ import Controls from "./components/controls/controls.js";
 import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
-import Shoe from "./engine/shoe/shoe.js";
 import Hand from "./engine/hand/hand.js";
 import GameUtils from "./engine/game-utils";
 
@@ -17,15 +16,9 @@ class BlackJack extends Component {
   constructor(props) {
     super(props);
 
-    this.state = this.hasStateInLocalStorage()
-      ? this.restoreState()
-      : this.createNewState();
+    this.state = GameUtils.createNewState();
 
     // core blackjack engine methods
-    this.createNewState = this.createNewState.bind(this);
-    this.restoreState = this.restoreState.bind(this);
-    this.hasStateInLocalStorage = this.hasStateInLocalStorage.bind(this);
-    this.writeGameStateToLocalStorage = this.writeGameStateToLocalStorage.bind(this);
     this.evaluateGameState = this.evaluateGameState.bind(this);
 
     this.getPlayersNextHand = this.getPlayersNextHand.bind(this);
@@ -52,67 +45,6 @@ class BlackJack extends Component {
     this.canStand = this.canStand.bind(this);
     this.canDouble = this.canDouble.bind(this);
     this.canSplit = this.canSplit.bind(this);
-  }
-
-  createNewState() {
-    const newShoe = new Shoe(8);
-
-    return {
-      options: {
-        minimumBet: betStep,
-        dealerStands: 17,
-      },
-      funds: 1000,
-      bet: betStep,
-      betPlaced: false,
-      shoe: newShoe,
-      dealersHand: new Hand(),
-      playersHands: [new Hand()],
-      activeHand: 0,
-      isPlayersTurn: false,
-      isDealersTurn: false,
-      waitForPlayerClick: false,
-    };
-  }
-
-  // check for existing blackjack state in localstorage
-  hasStateInLocalStorage() {
-    // check for relevent keys to make sure there is a valid game state in local storage somewhere.
-    // this allows existing gamestates to be overwritten if the game is updated with new needs.
-    return (
-      localStorage.getItem("funds") !== null &&
-      localStorage.getItem("bet") !== null &&
-      localStorage.getItem("betPlaced") !== null &&
-      localStorage.getItem("shoe") !== null &&
-      localStorage.getItem("options.minimumBet") !== null
-    );
-  }
-
-  restoreState() {
-    // restore previous values from local storage
-    const restoredFunds = parseInt(localStorage.getItem("funds"), 10);
-    const restoredBet = parseInt(localStorage.getItem("bet"), 10);
-    const restoredBetPlaced = localStorage.getItem("betPlaced");
-
-    const shoe = new Shoe();
-    const shoeCardsAsString = localStorage.getItem("shoe");
-    const restoredShoe = shoe.restoreFromString(shoeCardsAsString);
-
-    const restoredOptions = {
-      minimumBet: parseInt(localStorage.getItem("options.minimumBet"), 10),
-    };
-
-    // now restore the options object and return like new
-    return {
-      options: restoredOptions,
-      funds: restoredFunds,
-      bet: restoredBet,
-      betPlaced: (restoredBetPlaced === "true"),
-      shoe: restoredShoe,
-      dealersHand: new Hand(),
-      playersHands: [new Hand()],
-      activeHand: 0,
-    };
   }
 
   componentDidUpdate() {
@@ -218,14 +150,14 @@ class BlackJack extends Component {
     });
   }
 
-  writeGameStateToLocalStorage() {
-    localStorage.setItem("funds", this.state.funds);
-    localStorage.setItem("bet", this.state.bet);
-    localStorage.setItem("shoe", this.state.shoe.toString());
-    // write options object
-    localStorage.setItem("options.minimumBet", this.state.options.minimumBet);
-    localStorage.setItem("betPlaced", this.state.betPlaced);
-  }
+  // writeGameStateToLocalStorage() {
+  //   localStorage.setItem("funds", this.state.funds);
+  //   localStorage.setItem("bet", this.state.bet);
+  //   localStorage.setItem("shoe", this.state.shoe.toString());
+  //   // write options object
+  //   localStorage.setItem("options.minimumBet", this.state.options.minimumBet);
+  //   localStorage.setItem("betPlaced", this.state.betPlaced);
+  // }
 
   incrementBet() {
     if (this.state.bet + betStep <= this.state.funds) {

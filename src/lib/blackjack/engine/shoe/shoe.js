@@ -15,7 +15,6 @@ class Shoe {
 
     let cards = [];
 
-
     for (let i = 0; i < size; i++) { // eslint-disable-next-line no-loop-func
       suits.forEach(suit => {        // eslint-disable-next-line no-loop-func
         values.forEach(value => {
@@ -26,7 +25,6 @@ class Shoe {
 
     // shuffle the cards
     cards = _.shuffle(cards);
-
     return cards;
   }
 
@@ -70,7 +68,7 @@ class Shoe {
 
     // restore the initial size for when the shoe runs out of cards
     const sizeObjectString = convertedArray.pop();
-    this.size = sizeObjectString.size;
+    this.size = parseInt(sizeObjectString.size, 10);
 
     _.forEach(convertedArray, cardData => {
       // convert the card data string back to a card object

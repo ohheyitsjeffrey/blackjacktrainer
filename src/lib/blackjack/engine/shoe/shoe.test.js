@@ -101,15 +101,30 @@ test("restoreFromString() Properly Restores Cards And Size From toString() Backu
   // convert the shoe to a string array
   const shoeString = shoe.toString();
   // now convert it back into a shoe
-  const restoredShoe = new Shoe().restoreFromString(shoeString);
+  const restoredShoe = new Shoe();
+  restoredShoe.restoreFromString(shoeString);
 
   // verify cards are the same and in the same order
-  _.forEach(restoredShoe, (restoredCard, index) => {
+  _.forEach(restoredShoe.cards, (restoredCard, index) => {
     expect(shoe.cards[index]).toEqual(restoredCard);
   });
 
   // verify the size is intact as well
-  expect(shoe.size).toBe(1);
+  expect(restoredShoe.size).toEqual(1);
+});
+
+test("restoreFromString() Properly Restores An Empty Shoe From toString() Backup", () => {
+  const shoe = new Shoe();
+  shoe.cards = [];
+  // convert the shoe to a string array
+  const shoeString = shoe.toString();
+  // now convert it back into a shoe
+  const restoredShoe = new Shoe();
+  restoredShoe.restoreFromString(shoeString);
+  // verify cards are empty
+  expect(restoredShoe.cards.length).toBe(0);
+  // verify the size is intact as well
+  expect(restoredShoe.size).toBe(1);
 });
 
 test("Shoe Replenishes To Default Size When It Runs Out Of Cards", () => {

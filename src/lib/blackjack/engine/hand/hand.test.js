@@ -212,6 +212,92 @@ test("Calling isResolved() On A Hand That Has Not Bust Or Stood Returns False ",
   expect(newHand.isResolved()).toEqual(false);
 });
 
+test("toString returns string representation of cards in hand", () => {
+  const hand = new Hand();
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "6");
+
+  // insert the initial cards into the initial hand
+  hand.insert(card1);
+  hand.insert(card2);
+
+  // get the toString value
+  const strings = hand.toString();
+
+  // convert it back to an array of values
+  const convertedArray = JSON.parse(`[${strings}]`);
+
+  // create a new hand and attempt to re-insert the cards into it
+  const newHand = new Hand();
+  convertedArray.forEach(cardStringObject => {
+    const newCard = new Card(
+      cardStringObject.suit,
+      cardStringObject.value
+    );
+    newHand.insert(newCard);
+  });
+
+  // should have the same value and cards array should be the same length for each
+  expect(newHand.value).toEqual(hand.value);
+  expect(newHand.length()).toEqual(hand.length());
+  // verify cards with the same values exist in the array as well
+  const hasCard1 = _.find(newHand.cards, (card) => {
+    return card.value === card1.value && card.suit === card1.suit;
+  });
+  const hasCard2 = _.find(newHand.cards, (card) => {
+    return card.value === card2.value && card.suit === card2.suit;
+  });
+
+  // verify something came back, this could probably be better...
+  expect(hasCard1).toBeTruthy();
+  expect(hasCard2).toBeTruthy();
+});
+
+test("restoreFromString() correctly restores hand with cards", () => {
+  const hand = new Hand();
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "6");
+
+  // insert the initial cards into the initial hand
+  hand.insert(card1);
+  hand.insert(card2);
+
+  const string = hand.toString();
+
+  const newHand = new Hand();
+  newHand.restoreFromString(string);
+
+  // newHand's instance variables are the same as hands
+  expect(hand.value).toEqual(newHand.value);
+  expect(hand.value).toEqual(newHand.value);
+  expect(hand.value).toEqual(newHand.value);
+
+  // verify it also has the same cards
+  const hasCard1 = _.find(newHand.cards, (card) => {
+    return card.value === card1.value && card.suit === card1.suit;
+  });
+  const hasCard2 = _.find(newHand.cards, (card) => {
+    return card.value === card2.value && card.suit === card2.suit;
+  });
+
+  expect(hasCard1).toBeTruthy();
+  expect(hasCard2).toBeTruthy();
+});
+
+test("restoreFromString() correctly restores empty hand", () => {
+  const hand = new Hand();
+
+  const string = hand.toString();
+
+  const newHand = new Hand();
+  newHand.restoreFromString(string);
+
+  // newHand's instance variables are the same as hands
+  expect(hand.value).toEqual(newHand.value);
+  expect(hand.value).toEqual(newHand.value);
+  expect(hand.value).toEqual(newHand.value);
+});
+
 test("Hand can be cloneDeeped by lodash", () => {
   const hand = new Hand();
   const newHand = _.clone(hand);
@@ -313,3 +399,49 @@ test("isResolved() works after being cloneDeeped by lodash", () => {
   expect(newHand1.isResolved()).toBe(true);
   expect(newHand2.isResolved()).toBe(true);
 });
+
+test("toString() works after being cloneDeeped by lodash", () => {
+  const oldHand = new Hand();
+  const hand =  _.cloneDeep(oldHand);
+
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "6");
+
+  // insert the initial cards into the initial hand
+  hand.insert(card1);
+  hand.insert(card2);
+
+  // get the toString value
+  const strings = hand.toString();
+
+  // convert it back to an array of values
+  const convertedArray = JSON.parse(`[${strings}]`);
+
+  // create a new hand and attempt to re-insert the cards into it
+  const newHand = new Hand();
+  convertedArray.forEach(cardStringObject => {
+    const newCard = new Card(
+      cardStringObject.suit,
+      cardStringObject.value
+    );
+    newHand.insert(newCard);
+  });
+
+  // should have the same value and cards array should be the same length for each
+  expect(newHand.value).toEqual(hand.value);
+  expect(newHand.length()).toEqual(hand.length());
+  // verify cards with the same values exist in the array as well
+  const hasCard1 = _.find(newHand.cards, (card) => {
+    return card.value === card1.value && card.suit === card1.suit;
+  });
+  const hasCard2 = _.find(newHand.cards, (card) => {
+    return card.value === card2.value && card.suit === card2.suit;
+  });
+
+  // verify something came back, this could probably be better...
+  expect(hasCard1).toBeTruthy();
+  expect(hasCard2).toBeTruthy();
+});
+
+// no need to test
+

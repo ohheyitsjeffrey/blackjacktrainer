@@ -1,10 +1,15 @@
 import calcPayout from "./calcPayout";
 import suitsAndValues from "./suitsAndValues";
+import {
+  createNewState
+} from "./stateUtils";
 
 const gameUtils = {
-  calcPayout: calcPayout,
+  calcPayout,
+  createNewState,
   suits: suitsAndValues.suits,
   values: suitsAndValues.values,
+
 };
 
-export default gameUtils; 
+export default gameUtils;
