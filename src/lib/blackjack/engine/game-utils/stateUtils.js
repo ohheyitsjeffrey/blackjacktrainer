@@ -60,33 +60,6 @@ export function hasStateInLocalStorage() {
   );
 }
 
-export function restoreState() {
-  // restore previous values from local storage
-  const restoredFunds = parseInt(localStorage.getItem("funds"), 10);
-  const restoredBet = parseInt(localStorage.getItem("bet"), 10);
-  const restoredBetPlaced = localStorage.getItem("betPlaced");
-
-  const shoe = new Shoe();
-  const shoeCardsAsString = localStorage.getItem("shoe");
-  const restoredShoe = shoe.restoreFromString(shoeCardsAsString);
-
-  const restoredOptions = {
-    minimumBet: parseInt(localStorage.getItem("options.minimumBet"), 10),
-  };
-
-  // now restore the options object and return like new
-  return {
-    options: restoredOptions,
-    funds: restoredFunds,
-    bet: restoredBet,
-    betPlaced: (restoredBetPlaced === "true"),
-    shoe: restoredShoe,
-    dealersHand: new Hand(),
-    playersHands: [new Hand()],
-    activeHand: 0,
-  };
-}
-
 export function createNewState(options) {
   // const newShoe = new Shoe(8);
   return optionsAreValid(options)
@@ -98,7 +71,8 @@ export function createNewState(options) {
 export function playersHandsToString(playersHands) {
   const stringArray = [];
   playersHands.forEach((hand) => {
-    stringArray.push(hand.toString());
+    const handObjectString =  {hand: hand.toString()};
+    stringArray.push(JSON.stringify(handObjectString));
   });
   return stringArray.toString();
 }
@@ -110,9 +84,9 @@ export function restorePlayersHandsFromString(playersHands) {
 
   _.forEach(convertedArray, handString => {
     // convert the strings to hands
-    const hand = new Hand();
-    hand.restoreFromString(handString);
-    hands.push(hand);
+    const restoredHand = new Hand();
+    restoredHand.restoreFromString(handString.hand);
+    hands.push(restoredHand);
   });
 
   return hands;
@@ -134,4 +108,11 @@ export function writeGameStateToLocalStorage(state) {
   localStorage.setItem("waitForPlayerClick", state.waitForPlayerClick);
 }
 
+export function restoreStateFromLocalStorage() {
+  // restore previous values from local storage
 
+  // convert them and put them in restoredState
+  const restoredState = {};
+
+  return restoredState;
+}

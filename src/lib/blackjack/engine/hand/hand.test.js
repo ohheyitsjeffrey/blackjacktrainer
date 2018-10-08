@@ -286,10 +286,9 @@ test("restoreFromString() correctly restores hand with cards", () => {
 
 test("restoreFromString() correctly restores empty hand", () => {
   const hand = new Hand();
-
   const string = hand.toString();
-
   const newHand = new Hand();
+
   newHand.restoreFromString(string);
 
   // newHand's instance variables are the same as hands
@@ -443,5 +442,4 @@ test("toString() works after being cloneDeeped by lodash", () => {
   expect(hasCard2).toBeTruthy();
 });
 
-// no need to test
 

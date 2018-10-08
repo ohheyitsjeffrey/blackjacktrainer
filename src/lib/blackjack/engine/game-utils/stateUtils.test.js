@@ -8,14 +8,14 @@ import {
   createNewState,
   hasStateInLocalStorage,
   writeGameStateToLocalStorage,
-  restoreState,
+  restoreStateFromLocalStorage,
   playersHandsToString,
   restorePlayersHandsFromString,
 } from "./stateUtils";
 
 // this method will write a valid local state, assuming it has been updated if
 // state has also been updated
-const generateValidLocalStorageState = () => {
+const generateMockLocalStorageState = () => {
   localStorage.setItem("options.minimumBet", "test");
   localStorage.setItem("options.dealerStands", "test");
   localStorage.setItem("options.shoeSize", "test");
@@ -185,7 +185,7 @@ it("createNewState() returns default state when invalid options are passed", () 
 // hasStateInLocalStorage()
 it("hasStateInLocalStorage() returns true if valid state stored in local storage", () => {
   // create a valid state
-  generateValidLocalStorageState();
+  generateMockLocalStorageState();
   // verify it is detected by hasStateInLocalStorage()
   const hasState = hasStateInLocalStorage();
   expect(hasState).toBe(true);
@@ -219,12 +219,13 @@ it("playersHandsToString() accurately stringifies a hand with one card", () => {
   hand.insert(card1);
   hand.insert(card2);
 
-  const cardStringArray = [card1.toString(), card2.toString()];
   const playersHands = [hand];
   const handString = playersHandsToString(playersHands);
 
   // should return the same thing as just an array.toString() of the card.toString() function
-  expect(handString).toEqual(cardStringArray.toString());
+  const parsedValues = JSON.parse(handString);
+  expect(parsedValues.hand).toEqual(hand.toString());
+
 });
 
 it("playersHandsToString() accurately stringifies multiple hands", () => {
@@ -242,13 +243,13 @@ it("playersHandsToString() accurately stringifies multiple hands", () => {
   hand2.insert(card3);
   hand2.insert(card4);
 
-
   const playersHands = [hand1, hand2];
   const handStrings = playersHandsToString(playersHands);
 
-  // string should include the toString() values of each hand
-  expect(handStrings.includes(hand1.toString())).toBe(true);
-  expect(handStrings.includes(hand2.toString())).toBe(true);
+  const parsedValues = JSON.parse(`[${handStrings}]`);
+
+  expect(parsedValues[0].hand).toEqual(hand1.toString());
+  expect(parsedValues[1].hand).toEqual(hand2.toString());
 });
 
 it("playersHandsToString() accurately stringifies a hand with no cards", () => {
@@ -256,31 +257,8 @@ it("playersHandsToString() accurately stringifies a hand with no cards", () => {
   const playersHands = [hand];
   const handStrings = playersHandsToString(playersHands);
 
-  expect(handStrings).toEqual("empty");
-});
-
-it("playersHandsToString() converts back to an array of strings", () => {
-  const hand1 = new Hand();
-  const hand2 = new Hand();
-
-  const card1 = new Card("hearts", "10");
-  const card2 = new Card("spades", "6");
-  const card3 = new Card("diamonds", "3");
-  const card4 = new Card("clubs", "ace");
-
-  hand1.insert(card1);
-  hand1.insert(card2);
-
-  hand2.insert(card3);
-  hand2.insert(card4);
-
-
-  const playersHands = [hand1, hand2];
-  const handStrings = playersHandsToString(playersHands);
-
-  console.log(handStrings);
-
-
+  const parsedValues = JSON.parse(handStrings);
+  expect(parsedValues.hand).toEqual(hand.toString());
 });
 
 // writeStateToLocalStorage()
@@ -298,7 +276,7 @@ it("writeStateToLocalStorage() accurately writes values to local storage", () =>
   expect(localStorage.getItem("bet")).toEqual("5");
   expect(localStorage.getItem("betPlaced")).toEqual("false");
   expect(localStorage.getItem("dealersHand")).toEqual("empty");
-  expect(localStorage.getItem("playersHands")).toEqual("empty");
+  expect(localStorage.getItem("playersHands")).toEqual("{\"hand\":\"empty\"}");
   expect(localStorage.getItem("activeHand")).toEqual("0");
   expect(localStorage.getItem("isPlayersTurn")).toEqual("false");
   expect(localStorage.getItem("isDealersTurn")).toEqual("false");
@@ -316,37 +294,62 @@ it("restorePlayersHands() accurately restores an array of one hand with cards", 
   const playersHands = [hand];
   const playersHandsString = playersHandsToString(playersHands);
 
-  console.log(playersHandsString)
+  const restoredHands = restorePlayersHandsFromString(playersHandsString);
 
-  // const restoredHands = restorePlayersHandsFromString(playersHandsString);
-  // console.log(restoredHands);
-
+  // verify hands have the same attributes
+  expect(restoredHands[0].value).toEqual(hand.value);
+  expect(restoredHands[0].bust).toEqual(hand.bust);
+  expect(restoredHands[0].stand).toEqual(hand.stand);
+  expect(restoredHands[0].cards.length).toEqual(hand.cards.length);
 });
 
-it("restorePlayersHands() accurately restores an array of one hand no cards", () => {
+it("restorePlayersHands() accurately restores an array of one hand with no cards", () => {
+  const hand = new Hand();
+
+  const playersHands = [hand];
+  const playersHandsString = playersHandsToString(playersHands);
+
+  const restoredHands = restorePlayersHandsFromString(playersHandsString);
+
+  // verify hands have the same attributes
+  expect(restoredHands[0].value).toEqual(hand.value);
+  expect(restoredHands[0].bust).toEqual(hand.bust);
+  expect(restoredHands[0].stand).toEqual(hand.stand);
+  expect(restoredHands[0].cards.length).toEqual(hand.cards.length);
 
 });
 
 it("restorePlayersHands() accurately restores an array of two hands with cards", () => {
-  // const hand1 = new Hand();
-  // const hand2 = new Hand();
+  const hand1 = new Hand();
+  const hand2 = new Hand();
 
-  // const card1 = new Card("hearts", "10");
-  // const card2 = new Card("spades", "6");
-  // const card3 = new Card("diamonds", "3");
-  // const card4 = new Card("clubs", "ace");
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "6");
+  const card3 = new Card("diamonds", "3");
+  const card4 = new Card("clubs", "ace");
 
-  // hand1.insert(card1);
-  // hand1.insert(card2);
+  hand1.insert(card1);
+  hand1.insert(card2);
 
-  // hand2.insert(card3);
-  // hand2.insert(card4);
+  hand2.insert(card3);
+  hand2.insert(card4);
 
+  const playersHands = [hand1, hand2];
+  const playersHandsString = playersHandsToString(playersHands);
 
-  // const playersHands = [hand1, hand2];
-  // const handStrings = playersHandsToString(playersHands);
+  const restoredHands = restorePlayersHandsFromString(playersHandsString);
+
+  // verify hand1 and restored hand1 have the same attributes
+  expect(restoredHands[0].value).toEqual(hand1.value);
+  expect(restoredHands[0].bust).toEqual(hand1.bust);
+  expect(restoredHands[0].stand).toEqual(hand1.stand);
+  expect(restoredHands[0].cards.length).toEqual(hand1.cards.length);
+
+  // verify hand2 and restored hand2 have the same attributes
+  expect(restoredHands[1].value).toEqual(hand2.value);
+  expect(restoredHands[1].bust).toEqual(hand2.bust);
+  expect(restoredHands[1].stand).toEqual(hand2.stand);
+  expect(restoredHands[1].cards.length).toEqual(hand2.cards.length);
 });
 
-it("restorePlayersHands() accurately restores an array of two hands withno cards", () => {
 
-});
