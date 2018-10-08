@@ -116,9 +116,12 @@ class BlackJack extends Component {
   }
 
   clickToStartNextRound(){
-    this.state.waitForPlayerClick
-      ? this.updateAndStartNewRound()
-      : this.createNewState();
+    // this.state.waitForPlayerClick
+    //   ? this.updateAndStartNewRound()
+    //   : this.createNewState();
+    if(this.state.waitForPlayerClick){
+      this.updateAndStartNewRound();
+    }
   }
 
   clickToSelectHand(index) {
