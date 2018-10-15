@@ -6,6 +6,7 @@ import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
 import Hand from "./engine/hand/hand.js";
+import Shoe from "./engine/shoe/shoe.js";
 import GameUtils from "./engine/game-utils";
 
 import "./blackjack.css";
@@ -53,23 +54,14 @@ class BlackJack extends Component {
   dealCard(who) {
     return new Promise((resolve) => {
       // clone shoe properties to avoid weird state mutations
-      const shoe = Object.assign(
-        Object.create(
-          Object.getPrototypeOf(this.state.shoe)),
-        this.state.shoe
-      );
-
+      const shoe = _.cloneDeep(this.state.shoe);
       const card = shoe.draw();
 
       let stateUpdate;
 
       if (who === DEALER) {
         // clone hand to avoid weird state mutations
-        const newHand = Object.assign(
-          Object.create(
-            Object.getPrototypeOf(this.state.dealersHand)),
-          this.state.dealersHand
-        );
+        const newHand = _.cloneDeep(this.state.dealersHand);
         newHand.insert(card);
         stateUpdate = {
           dealersHand: newHand,
@@ -79,7 +71,10 @@ class BlackJack extends Component {
         const index = this.state.activeHand;
         const newPlayersHands = Array.from(this.state.playersHands);
         newPlayersHands[index].insert(card);
-        stateUpdate = { playersHands: newPlayersHands };
+        stateUpdate = {
+          playersHands: newPlayersHands,
+          shoe,
+        };
       }
 
       this.setState(stateUpdate, () => {
@@ -176,10 +171,15 @@ class BlackJack extends Component {
 
       if (playersHands[activeHand].isResolved()) {
         const nextHand = this.getPlayersNextHand();
+        // if the player's turn is over, update state and call dealtersTurn()
         if (nextHand < 0) {
           this.setState({
             isPlayersTurn: false,
             isDealersTurn: true,
+          }, () => {
+            setTimeout(() => {
+              this.dealersTurn();
+            }, 500);
           });
         } else {
           this.setState({
@@ -190,15 +190,11 @@ class BlackJack extends Component {
       return;
     }
 
-    // is the dealer's turn
-    if (this.state.isDealersTurn && !this.state.dealersHand.isResolved()) {
-      this.dealersTurn();
-      return;
-    }
-
     // the round is over, settle each hand and wait for user input
     if (this.state.dealersHand.isResolved() && !this.state.waitForPlayerClick) {
-      this.settleRound();
+      setTimeout(() => {
+        this.settleRound();
+      }, 500);
     }
   }
 
@@ -219,11 +215,11 @@ class BlackJack extends Component {
     }));
   }
 
-  clickToStartNextRound(){
+  clickToStartNextRound() {
     // this.state.waitForPlayerClick
     //   ? this.updateAndStartNewRound()
     //   : this.createNewState();
-    if(this.state.waitForPlayerClick){
+    if (this.state.waitForPlayerClick) {
       this.updateAndStartNewRound();
     }
   }
@@ -298,16 +294,6 @@ class BlackJack extends Component {
 
 
   dealNewRound() {
-    console.log(this.state)
-    // const shoe = this.state.shoe;
-    // const dealer = new Hand();
-    // const player = new Hand();
-
-    // dealer.insert(shoe.draw());
-    // player.insert(shoe.draw());
-    // dealer.insert(shoe.draw());
-    // player.insert(shoe.draw());
-
     this.dealCard()
       .then(() => {
         return this.dealCard(DEALER);
@@ -324,13 +310,7 @@ class BlackJack extends Component {
   }
 
   dealersTurn() {
-    const dealersHand = Object.assign(
-      Object.create(
-        Object.getPrototypeOf(this.state.dealersHand)),
-      this.state.dealersHand
-    );
-
-
+    const dealersHand = _.cloneDeep(this.state.dealersHand);
     // const shoe = this.state.shoe;
 
     // if (dealersHand.value < 17) {
