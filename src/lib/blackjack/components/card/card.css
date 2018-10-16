@@ -1,7 +1,17 @@
-.card {
+.animated-card {
+  animation-name:  card-entry;
+  animation-duration: 500ms;
+  position: relative;
 
 }
 
 @keyframes card-entry {
-  
+  from {
+    transform: translate(-200%, -200%);
+
+  }
+  to {
+    transform: translate(0, 0);
+
+  }
 }

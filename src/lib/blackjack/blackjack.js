@@ -311,23 +311,6 @@ class BlackJack extends Component {
 
   dealersTurn() {
     const dealersHand = _.cloneDeep(this.state.dealersHand);
-    // const shoe = this.state.shoe;
-
-    // if (dealersHand.value < 17) {
-    //   dealersHand.insert(shoe.draw());
-
-    //   this.setState({
-    //     dealersHand,
-    //     shoe,
-    //   });
-    // } else {
-    //   dealersHand.stand = true;
-    //   this.setState({
-    //     dealersHand,
-    //     shoe,
-    //     dealersTurn: false,
-    //   });
-    // }
 
     if (dealersHand.value >= 17) {
       dealersHand.stand = true;

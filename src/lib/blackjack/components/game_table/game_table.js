@@ -131,7 +131,7 @@ class GameTable extends Component {
                 ? this.props.playersHands.map((hand, index) => {
                   return (
                     <Hand
-                      onClick={()=> {this.selectHand(index)}}
+                      onClick={()=> {this.selectHand(index);}}
                       cards={hand.cards}
                       key={`player-hand-${index}`}
                       isDealer={false}

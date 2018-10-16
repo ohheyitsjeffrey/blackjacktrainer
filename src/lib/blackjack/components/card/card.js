@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cardSvgs from "./svg/card_index.js";
 
+import "./card.css";
+
 class Card extends Component {
   constructor(props) {
     super(props);
@@ -55,18 +57,23 @@ class Card extends Component {
 
   render() {
     return (
-      <img
-        ref={(thisCard) => { this.thisCard = thisCard; }}
-        height={this.props.height}
-        src={this.props.isFlipped
-          ? cardSvgs.getCardBack()
-          : cardSvgs.getCardSvg(this.props.value, this.props.suit)
-        }
-        alt={this.props.isFlipped
-          ? "card back"
-          : `${this.props.value} of ${this.props.suit}`}
+      <div
+        className={this.props.dontAnimate ? "card" : "animated-card"}
         style={this.getCardStyles()}
-      />
+      >
+        <img
+          // className="card"
+          ref={(thisCard) => { this.thisCard = thisCard; }}
+          height={this.props.height}
+          src={this.props.isFlipped
+            ? cardSvgs.getCardBack()
+            : cardSvgs.getCardSvg(this.props.value, this.props.suit)
+          }
+          alt={this.props.isFlipped
+            ? "card back"
+            : `${this.props.value} of ${this.props.suit}`}
+        />
+      </div>
     );
   }
 }
@@ -79,6 +86,7 @@ Card.propTypes = {
   willOverflow: PropTypes.bool.isRequired,
   handSize: PropTypes.number.isRequired,
   zIndex: PropTypes.number.isRequired,
+  dontAnimate: PropTypes.bool,
 };
 
 export default Card;
