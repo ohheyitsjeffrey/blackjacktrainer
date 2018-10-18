@@ -19,7 +19,7 @@ class Hand extends Component {
 
   componentDidMount() {
     /* give cards a static height relative to how large this container is.  This
-    is necessary for giving them absolute positioning when rendering a collapsed 
+    is necessary for giving them absolute positioning when rendering a collapsed
     hand. */
     this.updateDimensionsAndState();
 
@@ -38,8 +38,8 @@ class Hand extends Component {
     overflow so that we can inform the cards to change styles and fold on top of
     one another.  The correct way to do this is probably to get the actual width
     of a card, but here we estimate using a rough aspect ratio of the cards
-    because it is easier (thus the clientHeight * .7).  As this is opensource 
-    by all means feel free to scold me with better ways to do this.  I would 
+    because it is easier (thus the clientHeight * .7).  As this is opensource
+    by all means feel free to scold me with better ways to do this.  I would
     love to hear them.
     */
 
@@ -49,7 +49,7 @@ class Hand extends Component {
           containerHeight: this.thisHand.clientHeight,
         });
       }
-      if (((this.thisHand.clientHeight * .7) * this.props.cards.length) > this.thisHand.clientWidth &&
+      if (((this.thisHand.clientHeight * .75) * this.props.cards.length) > this.thisHand.clientWidth &&
        this.state.willOverflow !== true) {
         this.setState({
           willOverflow: true,
@@ -64,11 +64,11 @@ class Hand extends Component {
         className="hand"
         onClick={this.props.onClick}
         ref={(thisHand) => { this.thisHand = thisHand; }}
-        style={this.props.highlightActive 
+        style={this.props.highlightActive
           ? {
             border: "solid gold",
             animation: "blink 1s step-end infinite alternate",
-          } 
+          }
           : {}}
       >
         {this.props.cards && this.state.containerHeight
@@ -83,6 +83,11 @@ class Hand extends Component {
                 willOverflow={this.state.willOverflow}
                 handSize={this.props.cards.length}
                 zIndex={index + 1}
+                dontAnimate={
+                  this.props.handIndex &&
+                  this.props.handIndex > 0 &&
+                  index === 0
+                }
               />
             );
           })
@@ -99,6 +104,7 @@ Hand.propTypes = {
   isDealer: PropTypes.bool,
   isDealersTurn: PropTypes.bool,
   onClick: PropTypes.func,
+  handIndex: PropTypes.number,
 };
 
 

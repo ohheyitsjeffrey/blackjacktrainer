@@ -9,7 +9,6 @@ const gameUtils = {
   createNewState,
   suits: suitsAndValues.suits,
   values: suitsAndValues.values,
-
 };
 
 export default gameUtils;

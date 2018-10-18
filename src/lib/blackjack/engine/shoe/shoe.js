@@ -82,4 +82,5 @@ class Shoe {
   }
 }
 
+
 export default Shoe;

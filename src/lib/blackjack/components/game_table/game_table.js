@@ -16,7 +16,6 @@ class GameTable extends Component {
     this.placeBet = this.placeBet.bind(this);
     this.showModal = this.showModal.bind(this);
     this.renderModal = this.renderModal.bind(this);
-    // this.selectHand = this.selectHand.bind(this);
   }
 
   placeBet() {
@@ -131,7 +130,7 @@ class GameTable extends Component {
                 ? this.props.playersHands.map((hand, index) => {
                   return (
                     <Hand
-                      onClick={()=> {this.selectHand(index)}}
+                      onClick={()=> {this.selectHand(index);}}
                       cards={hand.cards}
                       key={`player-hand-${index}`}
                       isDealer={false}
@@ -141,7 +140,6 @@ class GameTable extends Component {
                       clickToSelectHand={this.props.clickToSelectHand}
                     />
                   );
-
                 })
                 : <div />
               }

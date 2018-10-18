@@ -4,6 +4,7 @@
   flex-direction: column;
   padding-top: 80%;
   position: relative;
+  overflow: hidden;
 }
 
 .game-table-inner {
@@ -44,7 +45,7 @@
 .modal-action-controls {
   display: flex;
   flex-grow: 1;
-  flex-shrink: 1;  
+  flex-shrink: 1;
 }
 
 .modal-action-control-wrapper {
