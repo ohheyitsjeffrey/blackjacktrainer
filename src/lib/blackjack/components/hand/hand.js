@@ -49,7 +49,7 @@ class Hand extends Component {
           containerHeight: this.thisHand.clientHeight,
         });
       }
-      if (((this.thisHand.clientHeight * .7) * this.props.cards.length) > this.thisHand.clientWidth &&
+      if (((this.thisHand.clientHeight * .75) * this.props.cards.length) > this.thisHand.clientWidth &&
        this.state.willOverflow !== true) {
         this.setState({
           willOverflow: true,
@@ -105,7 +105,6 @@ Hand.propTypes = {
   isDealersTurn: PropTypes.bool,
   onClick: PropTypes.func,
   handIndex: PropTypes.number,
-
 };
 
 
