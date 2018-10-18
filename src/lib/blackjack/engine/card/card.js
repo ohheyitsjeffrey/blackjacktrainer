@@ -5,7 +5,6 @@ const values = GameUtils.values;
 
 class Card {
   constructor(suit, value) {
-
     if (!suits.includes(suit)) {
       throw new Error(`Not a valid card suit.  Valid suites are: ${suits}`);
     }
