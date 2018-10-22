@@ -311,8 +311,9 @@ class BlackJack extends Component {
 
   dealersTurn() {
     const dealersHand = _.cloneDeep(this.state.dealersHand);
+    const playerDidBust = GameUtils.allPlayerHandsDidBust(this.state.playersHands);
 
-    if (dealersHand.value >= 17) {
+    if (playerDidBust || dealersHand.value >= 17) {
       dealersHand.stand = true;
       this.setState({
         dealersHand,

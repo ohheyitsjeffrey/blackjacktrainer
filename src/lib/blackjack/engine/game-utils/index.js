@@ -1,3 +1,4 @@
+import allPlayerHandsDidBust from "./allPlayerHandsDidBust";
 import calcPayout from "./calcPayout";
 import suitsAndValues from "./suitsAndValues";
 import {
@@ -5,6 +6,7 @@ import {
 } from "./stateUtils";
 
 const gameUtils = {
+  allPlayerHandsDidBust,
   calcPayout,
   createNewState,
   suits: suitsAndValues.suits,
