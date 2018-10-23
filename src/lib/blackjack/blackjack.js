@@ -253,15 +253,6 @@ class BlackJack extends Component {
     });
   }
 
-  // writeGameStateToLocalStorage() {
-  //   localStorage.setItem("funds", this.state.funds);
-  //   localStorage.setItem("bet", this.state.bet);
-  //   localStorage.setItem("shoe", this.state.shoe.toString());
-  //   // write options object
-  //   localStorage.setItem("options.minimumBet", this.state.options.minimumBet);
-  //   localStorage.setItem("betPlaced", this.state.betPlaced);
-  // }
-
   incrementBet() {
     if (this.state.bet + BETSTEP <= this.state.funds) {
       this.setState((prevState) => ({
