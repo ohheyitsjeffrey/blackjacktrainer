@@ -1,12 +1,13 @@
-import allPlayerHandsDidBust from "./allPlayerHandsDidBust";
 import calcPayout from "./calcPayout";
 import suitsAndValues from "./suitsAndValues";
+import dealerShouldHit from "./dealerShouldHit";
+
 import {
   createNewState
 } from "./stateUtils";
 
 const gameUtils = {
-  allPlayerHandsDidBust,
+  dealerShouldHit,
   calcPayout,
   createNewState,
   suits: suitsAndValues.suits,

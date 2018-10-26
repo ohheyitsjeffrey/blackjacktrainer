@@ -1,6 +1,6 @@
 
-import Shoe from "../shoe/shoe.js";
-import Hand from "../hand/hand.js";
+import Shoe from "../shoe";
+import Hand from "../hand";
 import Card from "../card/card.js";
 
 import {

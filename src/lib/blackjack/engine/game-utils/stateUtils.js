@@ -1,5 +1,5 @@
-import Shoe from "../shoe/shoe.js";
-import Hand from "../hand/hand.js";
+import Shoe from "../shoe";
+import Hand from "../hand";
 import _ from "lodash";
 
 // will eventually be customizable but constant for now.

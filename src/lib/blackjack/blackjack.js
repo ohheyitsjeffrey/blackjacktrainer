@@ -5,8 +5,8 @@ import Controls from "./components/controls/controls.js";
 import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
-import Hand from "./engine/hand/hand.js";
-import Shoe from "./engine/shoe/shoe.js";
+import Hand from "./engine/hand";
+import Shoe from "./engine/shoe";
 import GameUtils from "./engine/game-utils";
 
 import "./blackjack.css";
@@ -302,9 +302,9 @@ class BlackJack extends Component {
 
   dealersTurn() {
     const dealersHand = _.cloneDeep(this.state.dealersHand);
-    const playerDidBust = GameUtils.allPlayerHandsDidBust(this.state.playersHands);
+    // const playerDidBust = GameUtils.allPlayerHandsDidBust(this.state.playersHands);
 
-    if (playerDidBust || dealersHand.value >= 17) {
+    if (!GameUtils.dealerShouldHit(dealersHand, this.state.options)) {
       dealersHand.stand = true;
       this.setState({
         dealersHand,

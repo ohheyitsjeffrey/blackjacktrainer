@@ -1,6 +1,6 @@
 import _ from "lodash";
-import Hand from "./hand.js";
-import Card from "../card/card.js";
+import Hand from "./hand";
+import Card from "../card";
 
 test("Can Create A New Empty Hand", () => {
   const newHand = new Hand();
@@ -174,12 +174,12 @@ test("Calling isBlackJack() On A Hand With More Than Two Cards Valued 21 Returns
 
   newHand.insert(new Card("hearts", "10"));
   newHand.insert(new Card("hearts", "5"));
-  newHand.insert(new Card("hearts", "5"));
   newHand.insert(new Card("spades", "6"));
 
   expect(newHand.isBlackJack()).toEqual(false);
 });
 
+//isResolved() tests
 test("Calling isResolved() On A Hand That Busts Returns True", () => {
   const newHand = new Hand();
 
@@ -212,6 +212,7 @@ test("Calling isResolved() On A Hand That Has Not Bust Or Stood Returns False ",
   expect(newHand.isResolved()).toEqual(false);
 });
 
+//toString() and restoreFromString() tests
 test("toString returns string representation of cards in hand", () => {
   const hand = new Hand();
   const card1 = new Card("hearts", "10");
@@ -297,6 +298,7 @@ test("restoreFromString() correctly restores empty hand", () => {
   expect(hand.value).toEqual(newHand.value);
 });
 
+// deep cloning with lodash tests
 test("Hand can be cloneDeeped by lodash", () => {
   const hand = new Hand();
   const newHand = _.clone(hand);
@@ -442,4 +444,76 @@ test("toString() works after being cloneDeeped by lodash", () => {
   expect(hasCard2).toBeTruthy();
 });
 
+// isSoft() value tests related to calcValue()
+it("isSoft is true when it has 1 ace that can still be 1 or 11", () => {
+  const hand =  new Hand();
 
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "ace");
+
+  hand.insert(card1);
+  hand.insert(card2);
+
+  expect(hand.isSoft).toBe(true);
+});
+
+it("isSoft is false when it has 1 ace that can only be 1", () => {
+  const hand =  new Hand();
+
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("hearts", "10");
+  const card3 = new Card("spades", "ace");
+
+  hand.insert(card1);
+  hand.insert(card2);
+  hand.insert(card3);
+
+  expect(hand.isSoft).toBe(false);
+});
+
+it("isSoft is true when it has 2 ace and 1 that can still be 1 or 11", () => {
+  const hand =  new Hand();
+
+  const card1 = new Card("hearts", "9");
+  const card2 = new Card("spades", "ace");
+  const card3 = new Card("spades", "ace");
+
+  hand.insert(card1);
+  hand.insert(card2);
+  hand.insert(card3);
+
+  expect(hand.isSoft).toBe(true);
+});
+
+it("isSoft is false when it has 2 ace and both can only be 1", () => {
+  const hand =  new Hand();
+
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "ace");
+  const card3 = new Card("spades", "ace");
+
+  hand.insert(card1);
+  hand.insert(card2);
+  hand.insert(card3);
+
+  expect(hand.isSoft).toBe(false);
+});
+
+it("isSoft calculates with insert", () => {
+  const hand =  new Hand();
+
+  const card1 = new Card("hearts", "10");
+  const card2 = new Card("spades", "ace");
+
+  hand.insert(card1);
+  hand.insert(card2);
+
+  // should still be soft at this point
+  expect(hand.isSoft).toBe(true);
+
+  // should be false after inserting another ace pushing the value to 22 or 12
+  const card3 = new Card("spades", "ace");
+  hand.insert(card3);
+
+  expect(hand.isSoft).toBe(false);
+});

@@ -7,6 +7,7 @@ export default class Hand {
     this.value = 0;
     this.bust = false;
     this.stand = false;
+    this.isSoft = false;
   }
   // add a card to the hand.
   insert(card) {
@@ -38,6 +39,14 @@ export default class Hand {
       this.value -= 10;
       flexibleAces -= 1;
     }
+    // if there are still flexibleAces the hand is soft and should be noted as such for when hit on
+    // soft 17 is enabled.
+    if(flexibleAces > 0) {
+      this.isSoft = true;
+    } else {
+      this.isSoft = false;
+    }
+
     // at this point, if there are no more aces to adjust in the hand, and the value is still over
     // 21, this hand busts and we move on.
     if (this.value > 21) {
@@ -76,12 +85,12 @@ export default class Hand {
 
       _.forEach(convertedArray, (cardData) => {
         // convert the card data string back to a card object
-        let card = new Card(
+        const restoredCard = new Card(
           cardData.suit,
           cardData.value
         );
         // now restore the card to the cards array
-        this.insert(card);
+        this.insert(restoredCard);
       });
     }
   }

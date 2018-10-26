@@ -3,7 +3,7 @@ import _ from "lodash";
 import Card from "../card/card.js";
 import GameUtils from "../game-utils";
 
-class Shoe {
+export default class Shoe {
   constructor(size = 1) {
     this.size = size;
     this.cards = this.newShoe(size);
@@ -81,6 +81,3 @@ class Shoe {
     });
   }
 }
-
-
-export default Shoe;
