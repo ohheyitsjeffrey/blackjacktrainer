@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { Button } from "react-bootstrap";
+// import { Button } from "react-bootstrap";
+import { Button } from "../common-ui";
 
 import "./controls.css";
 
@@ -35,25 +36,29 @@ class Controls extends Component {
     return (
       <div className="controls">
         <div className="control-wrapper">
-          <Button block 
+          <Button
+            fullWidth
             onClick={this.props.split}
             disabled={!this.props.canSplit}
           >Split</Button>
         </div>
         <div className="control-wrapper">
-          <Button block
+          <Button
+            fullWidth
             onClick={this.double}
             disabled={!this.props.canDouble}
           >Double</Button>
         </div>
         <div className="control-wrapper">
-          <Button block
+          <Button
+            fullWidth
             onClick={this.stand}
             disabled={!this.props.canStand}
           >Stand</Button>
         </div>
         <div className="control-wrapper">
-          <Button block
+          <Button
+            fullWidth
             onClick={this.hit}
             disabled={!this.props.canHit}
           >

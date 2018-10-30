@@ -20,13 +20,13 @@ class GameHeader extends Component {
             id="game-options-menu"
           // key={i}
           >
-            <MenuItem eventKey="1">Options</MenuItem>
+            {/* <MenuItem eventKey="1">Options</MenuItem>
             <MenuItem eventKey="2">About</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey="4"
             >
               New Game
-            </MenuItem>
+            </MenuItem> */}
           </DropdownButton>
         </div>
       </div>

@@ -1,0 +1,17 @@
+.blackjacktrainer-button {
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  padding: 0.375rem 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.blackjacktrainer-button:hover {
+  background-color: rgb(177, 174, 174);
+}
+
+.blackjacktrainer-button:active {
+  background-color: rgb(100, 100, 100);
+}

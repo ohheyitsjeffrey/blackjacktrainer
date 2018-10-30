@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
+
+import { Button } from "../common-ui";
 
 import Hand from "../hand/hand.js";
 import MessageOverlay from "./message_overlay/message_overlay.js";
@@ -48,53 +50,54 @@ class GameTable extends Component {
           {this.props.bet}
         </Modal.Body>
         <Modal.Footer>
-          <div>
-            <div className="modal-action-controls">
-              <div className="modal-action-control-wrapper">
-                <Button block
-                  onClick={this.decrementBet}
-                > - </Button>
-              </div>
-              <div className="modal-action-control-wrapper">
-                <Button
-                  onClick={this.placeBet}
-                  block>Place Bet</Button>
-              </div>
-              <div className="modal-action-control-wrapper">
-                <Button block
-                  onClick={this.incrementBet}
-                > + </Button>
-              </div>
-            </div >
+          <div className="modal-action-controls">
+            <div className="modal-action-control-wrapper">
+              <Button
+                // fullWidth
+                onClick={this.decrementBet}
+              >-</Button>
+            </div>
+            <div className="modal-action-control-wrapper">
+              <Button
+                fullWidth
+                onClick={this.placeBet}
+              >Place Bet</Button>
+            </div>
+            <div className="modal-action-control-wrapper">
+              <Button
+                // fullWidth
+                onClick={this.incrementBet}
+              >+</Button>
+            </div>
           </div >
         </Modal.Footer>
       </Modal>
     );
   }
 
-  betActions() {
-    return (
-      <div>
-        <div className="modal-action-controls">
-          <div className="modal-action-control-wrapper">
-            <Button block
-              onClick={this.props.decrementBet}
-            > - </Button>
-          </div>
-          <div className="modal-action-control-wrapper">
-            <Button block
-              onClick={this.props.placeBet}
-            >Place Bet</Button>
-          </div>
-          <div className="modal-action-control-wrapper">
-            <Button block
-              onClick={this.props.incrementBet}
-            > + </Button>
-          </div>
-        </div >
-      </div>
-    );
-  }
+  // betActions() {
+  //   return (
+  //     <div>
+  //       <div className="modal-action-controls">
+  //         <div className="modal-action-control-wrapper">
+  //           <Button fullWidth
+  //             onClick={this.props.decrementBet}
+  //           > - </Button>
+  //         </div>
+  //         <div className="modal-action-control-wrapper">
+  //           <Button fullWidth
+  //             onClick={this.props.placeBet}
+  //           >Place Bet</Button>
+  //         </div>
+  //         <div className="modal-action-control-wrapper">
+  //           <Button fullWidth
+  //             onClick={this.props.incrementBet}
+  //           > + </Button>
+  //         </div>
+  //       </div >
+  //     </div>
+  //   );
+  // }
 
   highlight(index) {
     return this.props.shouldHighlight && this.props.highlightIndex === index;
@@ -130,7 +133,7 @@ class GameTable extends Component {
                 ? this.props.playersHands.map((hand, index) => {
                   return (
                     <Hand
-                      onClick={()=> {this.selectHand(index);}}
+                      onClick={() => { this.selectHand(index); }}
                       cards={hand.cards}
                       key={`player-hand-${index}`}
                       isDealer={false}
