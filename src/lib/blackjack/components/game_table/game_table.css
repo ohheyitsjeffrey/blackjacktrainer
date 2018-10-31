@@ -25,32 +25,10 @@
 
 .game-table-player,
 .game-table-dealer  {
-  /* align-items: stretch; */
   display: flex;
   flex-direction: row;
   height: 50%;
   justify-content: center;
   width: 100%;
   align-items: center;
-}
-
-.modal-container {
-  position: relative;
-}
-
-.modal-container .modal, .modal-container .modal-backdrop {
-  position: absolute;
-}
-
-.modal-action-controls {
-  display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
-.modal-action-control-wrapper {
-  flex-basis: 25%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  margin: 5px;
 }

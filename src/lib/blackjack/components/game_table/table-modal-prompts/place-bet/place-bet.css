@@ -1,0 +1,37 @@
+.modal-action-controls {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.modal-action-control-wrapper {
+  flex-basis: 25%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px;
+}
+
+.place-bet-body {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  justify-content: center;
+}
+
+@media screen and (max-width: 399px) {
+  .place-bet-body {
+    font-size: 2em;
+  }
+}
+
+
+@media screen and (min-width: 400px) {
+  .place-bet-title {
+    font-size: 24px;
+  }
+  .place-bet-body {
+    font-size: 4em;
+  }
+}

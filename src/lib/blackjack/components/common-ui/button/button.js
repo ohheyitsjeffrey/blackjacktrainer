@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import "./button.css";
 
-
 const Button = (props) => {
   return (
     <button
@@ -16,7 +15,7 @@ const Button = (props) => {
     </button>);
 };
 
-Button.PropTypes = {
+Button.propTypes = {
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
   children: PropTypes.any,

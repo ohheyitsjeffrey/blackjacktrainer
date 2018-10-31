@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { DropdownButton, MenuItem } from "react-bootstrap";
+import { Button } from "../common-ui";
 
 import "./game_header.css";
 
@@ -13,21 +13,11 @@ class GameHeader extends Component {
           $ {this.props.funds}
         </div>
         <div className="game-header-menu">
-          <DropdownButton
-            title="menu"
-            pullRight={true}
-            disabled={this.props.disableMenu}
-            id="game-options-menu"
-          // key={i}
+          <Button
+            onClick={() => {console.log("options coming soon")}}
           >
-            {/* <MenuItem eventKey="1">Options</MenuItem>
-            <MenuItem eventKey="2">About</MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey="4"
-            >
-              New Game
-            </MenuItem> */}
-          </DropdownButton>
+            Menu
+          </Button>
         </div>
       </div>
     );

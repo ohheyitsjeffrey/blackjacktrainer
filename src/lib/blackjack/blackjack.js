@@ -11,7 +11,9 @@ import GameUtils from "./engine/game-utils";
 
 import "./blackjack.css";
 
+// unit in which bets are incremented
 const BETSTEP = 5;
+// passed to make an action occur for the dealer rather than player
 const DEALER = "dealer";
 
 class BlackJack extends Component {
@@ -19,7 +21,6 @@ class BlackJack extends Component {
     super(props);
 
     this.state = GameUtils.createNewState();
-
     // core blackjack engine methods
     this.evaluateGameState = this.evaluateGameState.bind(this);
 
@@ -416,13 +417,8 @@ class BlackJack extends Component {
     hand1.insert(card1);
     hand2.insert(card2);
 
-    // copy the players hands as they are from state
-    const playersHands = this.state.playersHands;
-
-    // remove the hands to be split
-    playersHands.splice(handIndex, 1);
-
-    // push the new hands into the player's hands array
+    // push the new hands into the player's new hands array
+    const playersHands = [];
     playersHands.push(hand1);
     playersHands.push(hand2);
 
@@ -438,14 +434,14 @@ class BlackJack extends Component {
     return (
       <div className="blackjack">
         <GameHeader
-          funds={this.state.funds}
           disableMenu={!this.state.betPlaced}
+          funds={this.state.funds}
         />
         <GameTable
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
+          clickToSelectHand={this.clickToSelectHand}
           clickToStartNextRound={this.clickToStartNextRound}
-          waitForPlayerClick={this.state.waitForPlayerClick}
           dealersHand={this.state.dealersHand}
           decrementBet={() => { this.decrementBet(); }}
           highlightIndex={this.state.activeHand}
@@ -454,17 +450,17 @@ class BlackJack extends Component {
           placeBet={() => { this.placeBet(); }}
           playersHands={this.state.playersHands}
           shouldHighlight={this.state.isPlayersTurn && this.state.playersHands.length > 1}
-          clickToSelectHand={this.clickToSelectHand}
+          waitForPlayerClick={this.state.waitForPlayerClick}
         />
         <Controls
-          canHit={this.canHit()}
-          hit={this.hit}
-          canStand={this.canStand()}
-          stand={this.stand}
           canDouble={this.canDouble()}
-          double={this.double}
+          canHit={this.canHit()}
           canSplit={this.canSplit()}
+          canStand={this.canStand()}
+          double={this.double}
+          hit={this.hit}
           split={this.split}
+          stand={this.stand}
         />
       </div>
     );
