@@ -1,7 +1,7 @@
-import GameUtils from "../game-utils";
+import { suitsAndValues } from "../game-utils";
 
-const suits = GameUtils.suits;
-const values = GameUtils.values;
+const suits = suitsAndValues.suits;
+const values = suitsAndValues.values;
 
 export default class Card {
   constructor(suit, value) {

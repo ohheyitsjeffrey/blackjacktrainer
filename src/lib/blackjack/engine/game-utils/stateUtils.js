@@ -27,6 +27,8 @@ const newState = (options) => {
     isPlayersTurn: false,
     isDealersTurn: false,
     waitForPlayerClick: false,
+    showModal: false,
+    modalMode: undefined,
   };
 };
 

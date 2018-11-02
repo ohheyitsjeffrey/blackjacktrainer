@@ -69,6 +69,8 @@ const GameTable = (props) => {
 };
 
 GameTable.propTypes = {
+  modalMode: PropTypes.bool.isRequired,
+  showModal: PropTypes.string | undefined,
   bet: PropTypes.number,
   betPlaced: PropTypes.bool,
   incrementBet: PropTypes.func,

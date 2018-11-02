@@ -7,7 +7,12 @@ import GameTable from "./components/game_table/game_table.js";
 
 import Hand from "./engine/hand";
 import Shoe from "./engine/shoe";
-import GameUtils from "./engine/game-utils";
+import {
+  calcPayout,
+  createNewState,
+  dealerShouldHit,
+  MODALMODES,
+} from "./engine/game-utils";
 
 import "./blackjack.css";
 
@@ -15,12 +20,16 @@ import "./blackjack.css";
 const BETSTEP = 5;
 // passed to make an action occur for the dealer rather than player
 const DEALER = "dealer";
+// constants for determining which fragment to load in modal
+const INSURANCE = MODALMODES.INSURANCE;
+const OPTIONS = MODALMODES.OPTIONS;
+const PLACEBET = MODALMODES.PLACEBET;
 
 class BlackJack extends Component {
   constructor(props) {
     super(props);
 
-    this.state = GameUtils.createNewState();
+    this.state = createNewState();
     // core blackjack engine methods
     this.evaluateGameState = this.evaluateGameState.bind(this);
 
@@ -157,8 +166,12 @@ class BlackJack extends Component {
   // anything to do next.  Needs a better name but so do plenty of things...
   evaluateGameState() {
     // The game just started and a bet has not been placed
-    if (!this.state.betPlaced) {
+    if (!this.state.betPlaced && !this.state.showModal && !this.state.modalMode === PLACEBET) {
       // just wait for bet to be placed
+      this.setState({
+        showModal: true,
+        modalMode: PLACEBET,
+      });
       return;
     }
 
@@ -192,7 +205,7 @@ class BlackJack extends Component {
     }
 
     // the round is over, settle each hand and wait for user input
-    if (this.state.dealersHand.isResolved() && !this.state.waitForPlayerClick) {
+    if (this.state.dealersHand && this.state.dealersHand.isResolved() && !this.state.waitForPlayerClick) {
       setTimeout(() => {
         this.settleRound();
       }, 500);
@@ -207,7 +220,7 @@ class BlackJack extends Component {
     let payout = 0;
 
     _.forEach(playersHands, (hand) => {
-      payout += GameUtils.calcPayout(hand, dealersHand, bet);
+      payout += calcPayout(hand, dealersHand, bet);
     });
 
     this.setState(prevState => ({
@@ -271,7 +284,6 @@ class BlackJack extends Component {
   }
 
   placeBet() {
-    // const shoe = { ...this.state.shoe};
     const dealer = new Hand();
     const player = new Hand();
 
@@ -280,6 +292,8 @@ class BlackJack extends Component {
       funds: prevState.funds - prevState.bet,
       dealersHand: dealer,
       playersHands: [player],
+      showModal: false,
+      modalMode: undefined,
     }), () => { this.dealNewRound(); });
   }
 
@@ -303,9 +317,8 @@ class BlackJack extends Component {
 
   dealersTurn() {
     const dealersHand = _.cloneDeep(this.state.dealersHand);
-    // const playerDidBust = GameUtils.allPlayerHandsDidBust(this.state.playersHands);
 
-    if (!GameUtils.dealerShouldHit(dealersHand, this.state.options)) {
+    if (!dealerShouldHit(dealersHand, this.state.options)) {
       dealersHand.stand = true;
       this.setState({
         dealersHand,
@@ -440,6 +453,8 @@ class BlackJack extends Component {
         <GameTable
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
+          modalMode={this.state.modalMode}
+          showModal={this.state.showModal}
           clickToSelectHand={this.clickToSelectHand}
           clickToStartNextRound={this.clickToStartNextRound}
           dealersHand={this.state.dealersHand}

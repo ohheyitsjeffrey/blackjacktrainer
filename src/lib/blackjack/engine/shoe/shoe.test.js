@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import Shoe from "./shoe.js";
 import Card from "../card/card.js";
-import GameUtils from "../game-utils";
+import { suitsAndValues } from "../game-utils";
 
 test("Creating A Shoe Of Size 1 Contains 52 Cards", () => {
   const shoe = new Shoe();
@@ -18,8 +18,8 @@ test("Shoe Order is Randomized", () => {
   const shoe = new Shoe(1);
   const deck = [];
 
-  const suits = GameUtils.suits;
-  const values = GameUtils.values;
+  const suits = suitsAndValues.suits;
+  const values = suitsAndValues.values;
 
   // make a deck of 52 cards
   suits.forEach(suit => {
