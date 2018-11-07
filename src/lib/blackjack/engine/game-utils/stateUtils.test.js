@@ -8,7 +8,6 @@ import {
   createNewState,
   hasStateInLocalStorage,
   writeGameStateToLocalStorage,
-  restoreStateFromLocalStorage,
   playersHandsToString,
   restorePlayersHandsFromString,
 } from "./stateUtils";
@@ -29,6 +28,8 @@ const generateMockLocalStorageState = () => {
   localStorage.setItem("isPlayersTurn", "test");
   localStorage.setItem("isDealersTurn", "test");
   localStorage.setItem("waitForPlayerClick", "test");
+  localStorage.setItem("modalMode", "test");
+  localStorage.setItem("showModal", "test");
 };
 
 beforeEach(() => {
@@ -52,6 +53,8 @@ const defaultStateMock = {
   isPlayersTurn: false,
   isDealersTurn: false,
   waitForPlayerClick: false,
+  showModal: false,
+  modalMode: undefined,
 };
 
 // valid custom options
@@ -281,6 +284,7 @@ it("writeStateToLocalStorage() accurately writes values to local storage", () =>
   expect(localStorage.getItem("isPlayersTurn")).toEqual("false");
   expect(localStorage.getItem("isDealersTurn")).toEqual("false");
   expect(localStorage.getItem("waitForPlayerClick")).toEqual("false");
+  expect(localStorage.getItem("modalMode")).toEqual(null);
 });
 
 it("restorePlayersHands() accurately restores an array of one hand with cards", () => {

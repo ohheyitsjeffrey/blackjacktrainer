@@ -1,14 +1,57 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 import Hand from "../hand/hand.js";
 import MessageOverlay from "./message_overlay/message_overlay.js";
 import TableModal from "./table-modal";
-import { PlaceBetPrompt } from "./table-modal-prompts";
+
+import { MODALMODES } from "../../engine/game-utils";
+import {
+  PlaceBetPrompt,
+  OptionsPrompt,
+} from "./table-modal-prompts";
 
 import "./game_table.css";
 
+// constants for determining which fragment to load in modal
+const INSURANCE = MODALMODES.INSURANCE;
+const OPTIONS = MODALMODES.OPTIONS;
+const PLACEBET = MODALMODES.PLACEBET;
+
+
 const GameTable = (props) => {
+  const getModalBody = (mode) => {
+    const modalMap = {};
+
+    modalMap[INSURANCE] = {
+      component: "",
+      props: "",
+    };
+    modalMap[OPTIONS] = {
+      component: OptionsPrompt,
+      props: {},
+    };
+    modalMap[PLACEBET] = {
+      component: PlaceBetPrompt,
+      props: {
+        bet: props.bet,
+        incrementBet: props.incrementBet,
+        decrementBet: props.decrementBet,
+        placeBet: props.placeBet,
+      },
+    };
+
+    if (mode && Object.keys(modalMap).includes(mode)) {
+      const Component = modalMap[mode].component;
+      const modalProps = modalMap[mode].props;
+
+      return (
+        <Component {...modalProps} />
+      );
+    }
+  }
+
   const highlight = (index) => {
     return props.shouldHighlight && props.highlightIndex === index;
   };
@@ -19,20 +62,18 @@ const GameTable = (props) => {
 
   return (
     <div className="game-table game-table-container"
-      onClick={props.clickToStartNextRound}
+    // onClick={props.clickToStartNextRound}
     >
       <div className="game-table game-table-inner">
-        <TableModal show={!props.betPlaced}>
-          <PlaceBetPrompt
-            bet={props.bet}
-            incrementBet={props.incrementBet}
-            decrementBet={props.decrementBet}
-            placeBet={props.placeBet}
-          />
+        <TableModal show={props.modalMode !== undefined}>
+          {getModalBody(props.modalMode)}
         </TableModal>
         {
           props.waitForPlayerClick &&
-          <MessageOverlay message="Click To Start Next Round" />
+          <MessageOverlay
+            message="Click To Start Next Round"
+            clickAction={props.clickToStartNextRound}
+          />
         }
         <div className="game-table game-table-dealer">
           {props.dealersHand
@@ -69,8 +110,8 @@ const GameTable = (props) => {
 };
 
 GameTable.propTypes = {
-  modalMode: PropTypes.bool.isRequired,
-  showModal: PropTypes.string | undefined,
+  modalMode: PropTypes.string,
+  toggleModal: PropTypes.func,
   bet: PropTypes.number,
   betPlaced: PropTypes.bool,
   incrementBet: PropTypes.func,

@@ -6,7 +6,7 @@ import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
 import Hand from "./engine/hand";
-import Shoe from "./engine/shoe";
+// import Shoe from "./engine/shoe";
 import {
   calcPayout,
   createNewState,
@@ -21,7 +21,7 @@ const BETSTEP = 5;
 // passed to make an action occur for the dealer rather than player
 const DEALER = "dealer";
 // constants for determining which fragment to load in modal
-const INSURANCE = MODALMODES.INSURANCE;
+// const INSURANCE = MODALMODES.INSURANCE;
 const OPTIONS = MODALMODES.OPTIONS;
 const PLACEBET = MODALMODES.PLACEBET;
 
@@ -95,69 +95,14 @@ class BlackJack extends Component {
     });
   }
 
-  createNewState() {
-    const newShoe = new Shoe(8);
-    newShoe.shuffle();
-
-    return {
-      options: {
-        minimumBet: BETSTEP,
-        dealerStands: 17,
-      },
-      funds: 1000,
-      bet: BETSTEP,
-      betPlaced: false,
-      shoe: newShoe,
-      dealersHand: new Hand(),
-      playersHands: [new Hand()],
-      activeHand: 0,
-      isPlayersTurn: false,
-      isDealersTurn: false,
-      waitForPlayerClick: false,
-    };
-  }
-
-  // check for existing blackjack state in localstorage
-  hasStateInLocalStorage() {
-    // check for relevent keys to make sure there is a valid game state in local storage somewhere.
-    // this allows existing gamestates to be overwritten if the game is updated with new needs.
-    return (
-      localStorage.getItem("funds") !== null &&
-      localStorage.getItem("bet") !== null &&
-      localStorage.getItem("betPlaced") !== null &&
-      localStorage.getItem("shoe") !== null &&
-      localStorage.getItem("options.minimumBet") !== null
-    );
-  }
-
-  restoreState() {
-    // restore previous values from local storage
-    const restoredFunds = parseInt(localStorage.getItem("funds"), 10);
-    const restoredBet = parseInt(localStorage.getItem("bet"), 10);
-    const restoredBetPlaced = localStorage.getItem("betPlaced");
-
-    const shoe = new Shoe();
-    const shoeCardsAsString = localStorage.getItem("shoe");
-    const restoredShoe = shoe.restoreFromString(shoeCardsAsString);
-
-    const restoredOptions = {
-      minimumBet: parseInt(localStorage.getItem("options.minimumBet"), 10),
-    };
-
-    // now restore the options object and return like new
-    return {
-      options: restoredOptions,
-      funds: restoredFunds,
-      bet: restoredBet,
-      betPlaced: (restoredBetPlaced === "true"),
-      shoe: restoredShoe,
-      dealersHand: new Hand(),
-      playersHands: [new Hand()],
-      activeHand: 0,
-    };
+  toggleModal(mode) {
+    this.state.modalMode === mode
+      ? this.setState({ modalMode: undefined })
+      : this.setState({ modalMode: mode });
   }
 
   componentDidUpdate() {
+    // console.log("did update")
     // this lives here to ensure it is called anytime state updates.
     this.evaluateGameState();
   }
@@ -165,11 +110,11 @@ class BlackJack extends Component {
   // A common function to evaluate the state of the game and determine what if
   // anything to do next.  Needs a better name but so do plenty of things...
   evaluateGameState() {
+    // console.log("check")
     // The game just started and a bet has not been placed
-    if (!this.state.betPlaced && !this.state.showModal && !this.state.modalMode === PLACEBET) {
+    if (!this.state.betPlaced && this.state.modalMode !== PLACEBET) {
       // just wait for bet to be placed
       this.setState({
-        showModal: true,
         modalMode: PLACEBET,
       });
       return;
@@ -230,9 +175,6 @@ class BlackJack extends Component {
   }
 
   clickToStartNextRound() {
-    // this.state.waitForPlayerClick
-    //   ? this.updateAndStartNewRound()
-    //   : this.createNewState();
     if (this.state.waitForPlayerClick) {
       this.updateAndStartNewRound();
     }
@@ -292,12 +234,10 @@ class BlackJack extends Component {
       funds: prevState.funds - prevState.bet,
       dealersHand: dealer,
       playersHands: [player],
-      showModal: false,
+      // showModal: false,
       modalMode: undefined,
     }), () => { this.dealNewRound(); });
   }
-
-
 
   dealNewRound() {
     this.dealCard()
@@ -380,11 +320,10 @@ class BlackJack extends Component {
 
   double() {
     const handIndex = this.state.activeHand;
-    const shoe = this.state.shoe;
-    const hands = this.state.playersHands;
+    const shoe = _.cloneDeep(this.state.shoe);
+    const hands = _.cloneDeep(this.state.playersHands);
     const funds = this.state.funds - this.state.bet;
     const bet = this.state.bet * 2;
-
 
     hands[handIndex].insert(shoe.draw());
     hands[handIndex].stand = true;
@@ -447,14 +386,16 @@ class BlackJack extends Component {
     return (
       <div className="blackjack">
         <GameHeader
-          disableMenu={!this.state.betPlaced}
+          disableMenu={this.state.modalMode && this.state.modalMode !== OPTIONS}
+          toggleOptions={() => { this.toggleModal(OPTIONS); }}
           funds={this.state.funds}
         />
         <GameTable
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
+          toggleModal={this.toggleModal}
           modalMode={this.state.modalMode}
-          showModal={this.state.showModal}
+          // showModal={this.state.showModal}
           clickToSelectHand={this.clickToSelectHand}
           clickToStartNextRound={this.clickToStartNextRound}
           dealersHand={this.state.dealersHand}

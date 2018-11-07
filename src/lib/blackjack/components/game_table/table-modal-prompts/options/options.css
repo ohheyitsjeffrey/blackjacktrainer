@@ -1,0 +1,20 @@
+.menu-modal-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu-modal-header-tab {
+  padding: 5px;
+}
+
+.menu-modal-body {
+  overflow: auto;
+  border: black 1px solid;
+  height: 100%;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+p {
+  text-align: left;
+}

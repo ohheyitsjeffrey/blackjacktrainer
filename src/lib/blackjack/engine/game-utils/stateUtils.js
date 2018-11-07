@@ -1,6 +1,7 @@
 import Shoe from "../shoe";
 import Hand from "../hand";
 import _ from "lodash";
+import MODALMODES from "./modalModes";
 
 // will eventually be customizable but constant for now.
 const BETSTEP = 5;
@@ -27,8 +28,8 @@ const newState = (options) => {
     isPlayersTurn: false,
     isDealersTurn: false,
     waitForPlayerClick: false,
-    showModal: false,
-    modalMode: undefined,
+    // showModal: true,
+    modalMode: MODALMODES.PLACEBET,
   };
 };
 
@@ -58,6 +59,8 @@ export function hasStateInLocalStorage() {
     localStorage.getItem("activeHand") !== null &&
     localStorage.getItem("isPlayersTurn") !== null &&
     localStorage.getItem("isDealersTurn") !== null &&
+    // localStorage.getItem("showModal") !== null &&
+    localStorage.getItem("modalMode") !== null &&
     localStorage.getItem("waitForPlayerClick") !== null
   );
 }
@@ -108,6 +111,7 @@ export function writeGameStateToLocalStorage(state) {
   localStorage.setItem("isPlayersTurn", state.isPlayersTurn);
   localStorage.setItem("isDealersTurn", state.isDealersTurn);
   localStorage.setItem("waitForPlayerClick", state.waitForPlayerClick);
+  localStorage.setItem("modalMode", state.modalMode);
 }
 
 export function restoreStateFromLocalStorage() {
