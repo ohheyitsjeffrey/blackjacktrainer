@@ -9,7 +9,7 @@ import "./game-menu.css";
 const OPTIONSMENU = "options";
 const ABOUTMENU = "about";
 
-const AboutMenu = () => {
+const AboutMenu = (props) => {
   return (
     <React.Fragment>
       <p>
@@ -22,6 +22,12 @@ const AboutMenu = () => {
         To report bugs, ...
 
       </p>
+      <Button
+        fullWidth
+        onClick={props.closeModal}
+      >
+        Close
+      </Button>
     </React.Fragment>
   );
 };
@@ -87,7 +93,7 @@ const OptionsMenu = (props) => {
             fullWidth
             onClick={props.closeModal}
           >
-            Cancel
+            Close
           </Button>
         </div>
         <div className="save-button-wrapper">
@@ -115,14 +121,16 @@ const MenuTab = (props) => {
 
 const CurrentMenu = (props) => {
   return props.page === ABOUTMENU
-    ? (<AboutMenu />)
+    ? (<AboutMenu
+      closeModal={props.closeModal}
+    />)
     : (<OptionsMenu
       options={props.options}
-      // options menu props
       toggleValue={props.toggleValue}
       incrementValue={props.incrementValue}
       decrementValue={props.decrementValue}
       updateCustomOptions={props.updateCustomOptions}
+      closeModal={props.closeModal}
     />);
 };
 
