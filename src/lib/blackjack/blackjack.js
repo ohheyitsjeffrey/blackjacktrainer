@@ -189,16 +189,26 @@ class BlackJack extends Component {
   }
 
   updateAndStartNewRound() {
-    this.setState((prevState) => ({
-      activeHand: 0,
-      betPlaced: false,
-      bet: prevState.options.minimumBet,
-      isPlayersTurn: false,
-      isDealersTurn: false,
-      dealersHand: undefined,
-      playersHands: [],
-      waitForPlayerClick: false,
-    }));
+    const funds = this.state.funds;
+    const minimumBet = this.state.options.minimumBet;
+
+    if(funds < minimumBet){
+      // create a new gamestate with the existing options
+      const newGameState = createNewState(this.state.options);
+      // update state to start a new game
+      this.setState(newGameState);
+    } else {
+      this.setState((prevState) => ({
+        activeHand: 0,
+        betPlaced: false,
+        bet: prevState.options.minimumBet,
+        isPlayersTurn: false,
+        isDealersTurn: false,
+        dealersHand: undefined,
+        playersHands: [],
+        waitForPlayerClick: false,
+      }));
+    }
   }
 
   // if a player has split and has multiple hands, get the first one that is not resolved
