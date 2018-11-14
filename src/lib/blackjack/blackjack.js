@@ -17,7 +17,7 @@ import {
 import "./blackjack.css";
 
 // unit in which bets are incremented
-const BETSTEP = 5;
+const BETSTEP = 10;
 // passed to make an action occur for the dealer rather than player
 const DEALER = "dealer";
 // constants for determining which fragment to load in modal
@@ -39,6 +39,7 @@ class BlackJack extends Component {
     this.updateAndStartNewRound = this.updateAndStartNewRound.bind(this);
     this.clickToStartNextRound = this.clickToStartNextRound.bind(this);
     this.clickToSelectHand = this.clickToSelectHand.bind(this);
+    this.updateCustomOptions = this.updateCustomOptions.bind(this);
 
     // game table actions
     this.incrementBet = this.incrementBet.bind(this);
@@ -102,7 +103,6 @@ class BlackJack extends Component {
   }
 
   componentDidUpdate() {
-    // console.log("did update")
     // this lives here to ensure it is called anytime state updates.
     this.evaluateGameState();
   }
@@ -382,6 +382,13 @@ class BlackJack extends Component {
     });
   }
 
+  updateCustomOptions(options) {
+    // this method will end the current game and begin a new one with custom passed options.
+    const newState = createNewState(options);
+
+    this.setState(newState);
+  }
+
   render() {
     return (
       <div className="blackjack">
@@ -393,9 +400,8 @@ class BlackJack extends Component {
         <GameTable
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
-          toggleModal={this.toggleModal}
+          closeModal={() => { this.toggleModal(undefined); }}
           modalMode={this.state.modalMode}
-          // showModal={this.state.showModal}
           clickToSelectHand={this.clickToSelectHand}
           clickToStartNextRound={this.clickToStartNextRound}
           dealersHand={this.state.dealersHand}
@@ -407,6 +413,8 @@ class BlackJack extends Component {
           playersHands={this.state.playersHands}
           shouldHighlight={this.state.isPlayersTurn && this.state.playersHands.length > 1}
           waitForPlayerClick={this.state.waitForPlayerClick}
+          options={this.state.options}
+          updateCustomOptions={this.updateCustomOptions}
         />
         <Controls
           canDouble={this.canDouble()}

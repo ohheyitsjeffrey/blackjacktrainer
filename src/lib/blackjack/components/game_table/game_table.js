@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import _ from "lodash";
 
 import Hand from "../hand/hand.js";
 import MessageOverlay from "./message_overlay/message_overlay.js";
@@ -9,7 +8,7 @@ import TableModal from "./table-modal";
 import { MODALMODES } from "../../engine/game-utils";
 import {
   PlaceBetPrompt,
-  OptionsPrompt,
+  GameMenu,
 } from "./table-modal-prompts";
 
 import "./game_table.css";
@@ -23,14 +22,17 @@ const PLACEBET = MODALMODES.PLACEBET;
 const GameTable = (props) => {
   const getModalBody = (mode) => {
     const modalMap = {};
-
     modalMap[INSURANCE] = {
       component: "",
       props: "",
     };
     modalMap[OPTIONS] = {
-      component: OptionsPrompt,
-      props: {},
+      component: GameMenu,
+      props: {
+        options: props.options,
+        closeModal: props.closeModal,
+        updateCustomOptions: props.updateCustomOptions,
+      },
     };
     modalMap[PLACEBET] = {
       component: PlaceBetPrompt,
@@ -50,7 +52,7 @@ const GameTable = (props) => {
         <Component {...modalProps} />
       );
     }
-  }
+  };
 
   const highlight = (index) => {
     return props.shouldHighlight && props.highlightIndex === index;
@@ -61,9 +63,7 @@ const GameTable = (props) => {
   };
 
   return (
-    <div className="game-table game-table-container"
-    // onClick={props.clickToStartNextRound}
-    >
+    <div className="game-table game-table-container">
       <div className="game-table game-table-inner">
         <TableModal show={props.modalMode !== undefined}>
           {getModalBody(props.modalMode)}
@@ -111,7 +111,7 @@ const GameTable = (props) => {
 
 GameTable.propTypes = {
   modalMode: PropTypes.string,
-  toggleModal: PropTypes.func,
+  closeModal: PropTypes.func,
   bet: PropTypes.number,
   betPlaced: PropTypes.bool,
   incrementBet: PropTypes.func,
@@ -125,6 +125,8 @@ GameTable.propTypes = {
   clickToStartNextRound: PropTypes.func,
   waitForPlayerClick: PropTypes.bool,
   clickToSelectHand: PropTypes.func,
+  options: PropTypes.object,
+  updateCustomOptions: PropTypes.func,
 };
 
 export default GameTable;

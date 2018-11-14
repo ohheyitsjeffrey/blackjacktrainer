@@ -3,14 +3,11 @@ import Hand from "../hand";
 import _ from "lodash";
 import MODALMODES from "./modalModes";
 
-// will eventually be customizable but constant for now.
-const BETSTEP = 5;
-
 // default options if no options are passed in createNewState()
 const defaultOptions = {
-  minimumBet: BETSTEP,
-  dealerStands: 17,
+  minimumBet: 10,
   shoeSize: 8,
+  hitOnSoft17: false,
 };
 
 // create a new state object for blackjack game, called in createNewState.
@@ -36,9 +33,9 @@ const newState = (options) => {
 // this function is only exported to test in jest and is not exported in index.js
 export function optionsAreValid(options) {
   return !_.isNil(options) &&
-    !_.isNil(options.minimumBet) && typeof (options.minimumBet) === "number" &&   // has minimumBet of type number
-    !_.isNil(options.shoeSize) && typeof (options.shoeSize) === "number" &&       // has shoeSize of type number
-    !_.isNil(options.dealerStands) && typeof (options.dealerStands) === "number";  // has dealerStands of type number
+    !_.isNil(options.minimumBet) && typeof (options.minimumBet) === "number" &&      // has minimumBet of type number
+    !_.isNil(options.shoeSize) && typeof (options.shoeSize) === "number" &&          // has shoeSize of type number
+    !_.isNil(options.hitOnSoft17) && typeof (options.hitOnSoft17) === "boolean";    // has dealerStands of type number
 }
 
 export function hasStateInLocalStorage() {
@@ -76,7 +73,7 @@ export function createNewState(options) {
 export function playersHandsToString(playersHands) {
   const stringArray = [];
   playersHands.forEach((hand) => {
-    const handObjectString =  {hand: hand.toString()};
+    const handObjectString = { hand: hand.toString() };
     stringArray.push(JSON.stringify(handObjectString));
   });
   return stringArray.toString();

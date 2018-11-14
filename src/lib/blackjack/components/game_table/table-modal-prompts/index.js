@@ -1,5 +1,5 @@
 import PlaceBetPrompt from "./place-bet";
-import OptionsPrompt from "./options";
+import GameMenu from "./game-menu";
 
 export { PlaceBetPrompt };
-export { OptionsPrompt };
+export { GameMenu };
