@@ -18,8 +18,11 @@ import "./blackjack.css";
 
 // unit in which bets are incremented
 const BETSTEP = 10;
+
 // passed to make an action occur for the dealer rather than player
+
 const DEALER = "dealer";
+
 // constants for determining which fragment to load in modal
 // const INSURANCE = MODALMODES.INSURANCE;
 const OPTIONS = MODALMODES.OPTIONS;
@@ -62,7 +65,7 @@ class BlackJack extends Component {
     this.dealCard = this.dealCard.bind(this);
   }
 
-  dealCard(who) {
+  dealCard(hand) {
     return new Promise((resolve) => {
       // clone shoe properties to avoid weird state mutations
       const shoe = _.cloneDeep(this.state.shoe);
@@ -70,20 +73,20 @@ class BlackJack extends Component {
 
       let stateUpdate;
 
-      if (who === DEALER) {
+      if (!_.isNil(hand)) {
+        // const index = this.state.activeHand;
+        const newPlayersHands = Array.from(this.state.playersHands);
+        newPlayersHands[hand].insert(card);
+        stateUpdate = {
+          playersHands: newPlayersHands,
+          shoe,
+        };
+      } else {
         // clone hand to avoid weird state mutations
         const newHand = _.cloneDeep(this.state.dealersHand);
         newHand.insert(card);
         stateUpdate = {
           dealersHand: newHand,
-          shoe,
-        };
-      } else {
-        const index = this.state.activeHand;
-        const newPlayersHands = Array.from(this.state.playersHands);
-        newPlayersHands[index].insert(card);
-        stateUpdate = {
-          playersHands: newPlayersHands,
           shoe,
         };
       }
@@ -250,13 +253,14 @@ class BlackJack extends Component {
   }
 
   dealNewRound() {
-    this.dealCard()
+    const index = this.state.activeHand
+    this.dealCard(index)
       .then(() => {
-        return this.dealCard(DEALER);
-      }).then(() => {
         return this.dealCard();
       }).then(() => {
-        return this.dealCard(DEALER);
+        return this.dealCard(index);
+      }).then(() => {
+        return this.dealCard();
       })
       .then(() => {
         return this.setState({
@@ -275,7 +279,7 @@ class BlackJack extends Component {
         dealersTurn: false,
       });
     } else {
-      this.dealCard(DEALER).then(
+      this.dealCard().then(
         () => {
           this.dealersTurn();
         }
@@ -293,7 +297,8 @@ class BlackJack extends Component {
   }
 
   hit() {
-    this.dealCard();
+    const index = this.state.activeHand
+    this.dealCard(index);
   }
 
   canStand() {
@@ -329,21 +334,22 @@ class BlackJack extends Component {
   }
 
   double() {
-    const handIndex = this.state.activeHand;
-    const shoe = _.cloneDeep(this.state.shoe);
-    const hands = _.cloneDeep(this.state.playersHands);
-    const funds = this.state.funds - this.state.bet;
+    const index = this.state.activeHand;
     const bet = this.state.bet * 2;
 
-    hands[handIndex].insert(shoe.draw());
-    hands[handIndex].stand = true;
+    this.setState(
+      {bet: bet},
+      () => {
+        this.dealCard(index).then(
+          () => {
+            const playersHands = _.cloneDeep(this.state.playersHands);
+            playersHands[index].stand = true;
 
-    this.setState({
-      shoe,
-      playersHands: hands,
-      funds,
-      bet,
-    });
+            this.setState({playersHands: playersHands});
+          }
+        );
+      }
+    );
   }
 
   canSplit() {
@@ -362,6 +368,7 @@ class BlackJack extends Component {
       firstCard.cardValue() === secondCard.cardValue();             // the cards are of equal value
   }
 
+  // TODO remove some of this hard coding to support resplitting
   split() {
     const handIndex = this.state.activeHand;
     const funds = this.state.funds - this.state.bet;
@@ -389,6 +396,11 @@ class BlackJack extends Component {
       playersHands,
       funds,
       bet,
+    },
+    () => {
+      this.dealCard(0).then(() => {
+        this.dealCard(1);
+      });
     });
   }
 
