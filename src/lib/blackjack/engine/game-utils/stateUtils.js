@@ -25,7 +25,7 @@ const newState = (options) => {
     isPlayersTurn: false,
     isDealersTurn: false,
     waitForPlayerClick: false,
-    // showModal: true,
+    inhibitPlayerAction: false,
     modalMode: MODALMODES.PLACEBET,
   };
 };
@@ -58,7 +58,8 @@ export function hasStateInLocalStorage() {
     localStorage.getItem("isDealersTurn") !== null &&
     // localStorage.getItem("showModal") !== null &&
     localStorage.getItem("modalMode") !== null &&
-    localStorage.getItem("waitForPlayerClick") !== null
+    localStorage.getItem("waitForPlayerClick") !== null &&
+    localStorage.getItem("inhibitPlayerAction") !== null
   );
 }
 
@@ -109,6 +110,7 @@ export function writeGameStateToLocalStorage(state) {
   localStorage.setItem("isDealersTurn", state.isDealersTurn);
   localStorage.setItem("waitForPlayerClick", state.waitForPlayerClick);
   localStorage.setItem("modalMode", state.modalMode);
+  localStorage.setItem("inhibitPlayerAction", state.inhibitPlayerAction);
 }
 
 export function restoreStateFromLocalStorage() {

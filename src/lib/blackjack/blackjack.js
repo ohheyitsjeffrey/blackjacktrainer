@@ -63,35 +63,47 @@ class BlackJack extends Component {
 
   dealCard(hand) {
     return new Promise((resolve) => {
-      // clone shoe properties to avoid weird state mutations
-      const shoe = _.cloneDeep(this.state.shoe);
-      const card = shoe.draw();
+      // first prevent players from clicking other actions if it is their turn
+      // while card is being dealt
+      this.setState({ inhibitPlayerAction: true },
+        () => {
+          // next, actually deal the card
+          // clone shoe properties to avoid weird state mutations
+          const shoe = _.cloneDeep(this.state.shoe);
+          const card = shoe.draw();
 
-      let stateUpdate;
+          let stateUpdate;
 
-      if (!_.isNil(hand)) {
-        // const index = this.state.activeHand;
-        const newPlayersHands = Array.from(this.state.playersHands);
-        newPlayersHands[hand].insert(card);
-        stateUpdate = {
-          playersHands: newPlayersHands,
-          shoe,
-        };
-      } else {
-        // clone hand to avoid weird state mutations
-        const newHand = _.cloneDeep(this.state.dealersHand);
-        newHand.insert(card);
-        stateUpdate = {
-          dealersHand: newHand,
-          shoe,
-        };
-      }
+          if (!_.isNil(hand)) {
+            // const index = this.state.activeHand;
+            const newPlayersHands = Array.from(this.state.playersHands);
+            newPlayersHands[hand].insert(card);
+            stateUpdate = {
+              playersHands: newPlayersHands,
+              shoe,
+            };
+          } else {
+            // clone hand to avoid weird state mutations
+            const newHand = _.cloneDeep(this.state.dealersHand);
+            newHand.insert(card);
+            stateUpdate = {
+              dealersHand: newHand,
+              shoe,
+            };
+          }
 
-      this.setState(stateUpdate, () => {
-        setTimeout(() => {
-          resolve();
-        }, 500);
-      });
+          this.setState(stateUpdate, () => {
+            // wait for card animation to complete, update state to allow player
+            // action again, and resolve the promise.
+            setTimeout(() => {
+              this.setState(
+                { inhibitPlayerAction: false },
+                () => {
+                  resolve();
+                });
+            }, 500);
+          });
+        });
     });
   }
 
@@ -131,14 +143,23 @@ class BlackJack extends Component {
         const nextHand = this.getPlayersNextHand();
         // if the player's turn is over, update state and call dealtersTurn()
         if (nextHand < 0) {
-          this.setState({
-            isPlayersTurn: false,
-            isDealersTurn: true,
-          }, () => {
-            setTimeout(() => {
-              this.dealersTurn();
-            }, 500);
-          });
+          if(!this.state.inhibitPlayerAction) {
+            this.setState({
+              isPlayersTurn: false,
+              // isDealersTurn: true,
+            }, () => {
+              setTimeout(() => {
+                this.setState(
+                  {isDealersTurn: true},
+                  () => {
+                    setTimeout(() => {
+                      this.dealersTurn();
+                    }, 500);
+                  }
+                );
+              }, 500);
+            });
+          }
         } else {
           this.setState({
             activeHand: nextHand,
@@ -191,7 +212,7 @@ class BlackJack extends Component {
     const funds = this.state.funds;
     const minimumBet = this.state.options.minimumBet;
 
-    if(funds < minimumBet){
+    if (funds < minimumBet) {
       // create a new gamestate with the existing options
       const newGameState = createNewState(this.state.options);
       // update state to start a new game
@@ -287,6 +308,7 @@ class BlackJack extends Component {
     const handIndex = this.state.activeHand;
 
     return this.state.isPlayersTurn &&              // it is the players turn
+      !this.state.inhibitPlayerAction &&            // they are not in the middle of an action
       this.state.playersHands.length > 0 &&         // the player has been dealt cards
       !this.state.playersHands[handIndex].bust &&   // current hand is not bust
       !this.state.playersHands[handIndex].stand;    // current hand is not standing either
@@ -301,6 +323,7 @@ class BlackJack extends Component {
     const handIndex = this.state.activeHand;
 
     return this.state.isPlayersTurn &&
+      !this.state.inhibitPlayerAction &&            // they are not in the middle of an action
       this.state.playersHands.length > 0 &&         // the player has been dealt cards
       !this.state.playersHands[handIndex].bust &&   // current hand is not busted
       !this.state.playersHands[handIndex].stand;    // current hand is not standing either
@@ -322,6 +345,7 @@ class BlackJack extends Component {
     const handIndex = this.state.activeHand;
 
     return this.state.isPlayersTurn &&
+      !this.state.inhibitPlayerAction &&            // they are not in the middle of an action
       this.state.playersHands.length > 0 &&                 // the player has been dealt cards
       this.state.playersHands[handIndex].length() === 2 &&  // the player has their first two cards
       this.state.funds > this.state.bet &&
@@ -345,7 +369,7 @@ class BlackJack extends Component {
             const playersHands = _.cloneDeep(this.state.playersHands);
             playersHands[index].stand = true;
 
-            this.setState({playersHands: playersHands});
+            this.setState({ playersHands: playersHands });
           }
         );
       }
@@ -363,6 +387,7 @@ class BlackJack extends Component {
     const secondCard = this.state.playersHands[handIndex].cards[1];
 
     return this.state.isPlayersTurn &&                              // it is the player's turn
+      !this.state.inhibitPlayerAction &&            // they are not in the middle of an action
       this.state.playersHands.length < 2 &&                         // single splits for now
       this.state.playersHands[handIndex].cards.length === 2 &&      // hand has not hit
       firstCard.cardValue() === secondCard.cardValue();             // the cards are of equal value
@@ -395,8 +420,7 @@ class BlackJack extends Component {
     this.setState({
       playersHands,
       funds,
-    },
-    () => {
+    }, () => {
       this.dealCard(0).then(() => {
         this.dealCard(1);
       });
@@ -411,6 +435,8 @@ class BlackJack extends Component {
   }
 
   render() {
+    console.log(this.state)
+
     return (
       <div className="blackjack">
         <GameHeader

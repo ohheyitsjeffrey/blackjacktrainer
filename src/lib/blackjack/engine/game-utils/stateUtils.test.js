@@ -29,6 +29,7 @@ const generateMockLocalStorageState = () => {
   localStorage.setItem("waitForPlayerClick", "test");
   localStorage.setItem("modalMode", "test");
   localStorage.setItem("showModal", "test");
+  localStorage.setItem("inhibitPlayerAction", "test");
 };
 
 beforeEach(() => {
@@ -52,7 +53,7 @@ const defaultStateMock = {
   isPlayersTurn: false,
   isDealersTurn: false,
   waitForPlayerClick: false,
-  showModal: false,
+  inhibitPlayerAction: false,
   modalMode: undefined,
 };
 
