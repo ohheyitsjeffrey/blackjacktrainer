@@ -435,8 +435,6 @@ class BlackJack extends Component {
   }
 
   render() {
-    console.log(this.state)
-
     return (
       <div className="blackjack">
         <GameHeader
