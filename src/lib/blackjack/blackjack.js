@@ -19,10 +19,6 @@ import "./blackjack.css";
 // unit in which bets are incremented
 const BETSTEP = 10;
 
-// passed to make an action occur for the dealer rather than player
-
-const DEALER = "dealer";
-
 // constants for determining which fragment to load in modal
 // const INSURANCE = MODALMODES.INSURANCE;
 const OPTIONS = MODALMODES.OPTIONS;
@@ -335,10 +331,14 @@ class BlackJack extends Component {
 
   double() {
     const index = this.state.activeHand;
+    const funds = this.state.funds - this.state.bet;
     const bet = this.state.bet * 2;
 
     this.setState(
-      {bet: bet},
+      {
+        bet,
+        funds,
+      },
       () => {
         this.dealCard(index).then(
           () => {
@@ -372,7 +372,7 @@ class BlackJack extends Component {
   split() {
     const handIndex = this.state.activeHand;
     const funds = this.state.funds - this.state.bet;
-    const bet = this.state.bet * 2;
+    // const bet = this.state.bet * 2;
 
     // get card 1 and 2 from the current hand to be split
     const card1 = this.state.playersHands[handIndex].cards[0];
@@ -395,7 +395,6 @@ class BlackJack extends Component {
     this.setState({
       playersHands,
       funds,
-      bet,
     },
     () => {
       this.dealCard(0).then(() => {
