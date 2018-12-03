@@ -1,158 +1,117 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Button, Modal } from "react-bootstrap";
 
 import Hand from "../hand/hand.js";
 import MessageOverlay from "./message_overlay/message_overlay.js";
+import TableModal from "./table-modal";
+
+import { MODALMODES } from "../../engine/game-utils";
+import {
+  PlaceBetPrompt,
+  GameMenu,
+} from "./table-modal-prompts";
 
 import "./game_table.css";
 
-class GameTable extends Component {
-  constructor(props, context) {
-    super(props, context);
+// constants for determining which fragment to load in modal
+const INSURANCE = MODALMODES.INSURANCE;
+const OPTIONS = MODALMODES.OPTIONS;
+const PLACEBET = MODALMODES.PLACEBET;
 
-    this.incrementBet = this.incrementBet.bind(this);
-    this.decrementBet = this.decrementBet.bind(this);
-    this.placeBet = this.placeBet.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.renderModal = this.renderModal.bind(this);
-  }
 
-  placeBet() {
-    this.props.placeBet();
-  }
+const GameTable = (props) => {
+  const getModalBody = (mode) => {
+    const modalMap = {};
+    modalMap[INSURANCE] = {
+      component: "",
+      props: "",
+    };
+    modalMap[OPTIONS] = {
+      component: GameMenu,
+      props: {
+        options: props.options,
+        closeModal: props.closeModal,
+        updateCustomOptions: props.updateCustomOptions,
+      },
+    };
+    modalMap[PLACEBET] = {
+      component: PlaceBetPrompt,
+      props: {
+        bet: props.bet,
+        incrementBet: props.incrementBet,
+        decrementBet: props.decrementBet,
+        placeBet: props.placeBet,
+      },
+    };
 
-  incrementBet() {
-    this.props.incrementBet();
-  }
+    if (mode && Object.keys(modalMap).includes(mode)) {
+      const Component = modalMap[mode].component;
+      const modalProps = modalMap[mode].props;
 
-  decrementBet() {
-    this.props.decrementBet();
-  }
+      return (
+        <Component {...modalProps} />
+      );
+    }
+  };
 
-  showModal() {
-    return !this.props.betPlaced;
-  }
+  const highlight = (index) => {
+    return props.shouldHighlight && props.highlightIndex === index;
+  };
 
-  renderModal() {
-    return (
-      <Modal
-        show={this.showModal()}
-        container={this}
-        aria-labelledby="contained-modal-title"
-      >
-        <Modal.Header>
-          <Modal.Title>Place Your Bet Please</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {this.props.bet}
-        </Modal.Body>
-        <Modal.Footer>
-          <div>
-            <div className="modal-action-controls">
-              <div className="modal-action-control-wrapper">
-                <Button block
-                  onClick={this.decrementBet}
-                > - </Button>
-              </div>
-              <div className="modal-action-control-wrapper">
-                <Button
-                  onClick={this.placeBet}
-                  block>Place Bet</Button>
-              </div>
-              <div className="modal-action-control-wrapper">
-                <Button block
-                  onClick={this.incrementBet}
-                > + </Button>
-              </div>
-            </div >
-          </div >
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+  const selectHand = (index) => {
+    props.clickToSelectHand(index);
+  };
 
-  betActions() {
-    return (
-      <div>
-        <div className="modal-action-controls">
-          <div className="modal-action-control-wrapper">
-            <Button block
-              onClick={this.props.decrementBet}
-            > - </Button>
-          </div>
-          <div className="modal-action-control-wrapper">
-            <Button block
-              onClick={this.props.placeBet}
-            >Place Bet</Button>
-          </div>
-          <div className="modal-action-control-wrapper">
-            <Button block
-              onClick={this.props.incrementBet}
-            > + </Button>
-          </div>
-        </div >
-      </div>
-    );
-  }
-
-  highlight(index) {
-    return this.props.shouldHighlight && this.props.highlightIndex === index;
-  }
-
-  selectHand(index) {
-    this.props.clickToSelectHand(index);
-  }
-
-  render() {
-    return (
-      <div className="modal-container" >
-        <div className="game-table game-table-container"
-          onClick={this.props.clickToStartNextRound}
-        >
-          <div className="game-table game-table-inner">
-            {
-              this.props.waitForPlayerClick &&
-              <MessageOverlay message="Click To Start Next Round" />
-            }
-            <div className="game-table game-table-dealer">
-              {this.props.dealersHand
-                ? <Hand
-                  cards={this.props.dealersHand.cards}
-                  isDealer={true}
-                  isDealersTurn={this.props.isDealersTurn}
-                />
-                : <div />
-              }
-            </div>
-            <div className="game-table game-table-player">
-              {this.props.playersHands
-                ? this.props.playersHands.map((hand, index) => {
-                  return (
-                    <Hand
-                      onClick={()=> {this.selectHand(index);}}
-                      cards={hand.cards}
-                      key={`player-hand-${index}`}
-                      isDealer={false}
-                      isDealersTurn={false}
-                      highlightActive={this.highlight(index)}
-                      handIndex={index}
-                      clickToSelectHand={this.props.clickToSelectHand}
-                    />
-                  );
-                })
-                : <div />
-              }
-            </div>
-          </div>
+  return (
+    <div className="game-table game-table-container">
+      <div className="game-table game-table-inner">
+        <TableModal show={props.modalMode !== undefined}>
+          {getModalBody(props.modalMode)}
+        </TableModal>
+        {
+          props.waitForPlayerClick &&
+          <MessageOverlay
+            message="Click To Start Next Round"
+            clickAction={props.clickToStartNextRound}
+          />
+        }
+        <div className="game-table game-table-dealer">
+          {props.dealersHand
+            ? <Hand
+              cards={props.dealersHand.cards}
+              isDealer={true}
+              isDealersTurn={props.isDealersTurn}
+            />
+            : <div />
+          }
         </div>
-        {this.renderModal()}
+        <div className="game-table game-table-player">
+          {props.playersHands
+            ? props.playersHands.map((hand, index) => {
+              return (
+                <Hand
+                  onClick={() => { selectHand(index); }}
+                  cards={hand.cards}
+                  key={`player-hand-${index}`}
+                  isDealer={false}
+                  isDealersTurn={false}
+                  highlightActive={highlight(index)}
+                  handIndex={index}
+                  clickToSelectHand={props.clickToSelectHand}
+                />
+              );
+            })
+            : <div />
+          }
+        </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 GameTable.propTypes = {
+  modalMode: PropTypes.string,
+  closeModal: PropTypes.func,
   bet: PropTypes.number,
   betPlaced: PropTypes.bool,
   incrementBet: PropTypes.func,
@@ -166,6 +125,8 @@ GameTable.propTypes = {
   clickToStartNextRound: PropTypes.func,
   waitForPlayerClick: PropTypes.bool,
   clickToSelectHand: PropTypes.func,
+  options: PropTypes.object,
+  updateCustomOptions: PropTypes.func,
 };
 
 export default GameTable;

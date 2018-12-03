@@ -58,7 +58,7 @@ class Card extends Component {
   render() {
     return (
       <div
-        className={this.props.dontAnimate ? "card" : "animated-card"}
+        className={this.props.dontAnimate ? "playing-card" : "animated-playing-card"}
         style={this.getCardStyles()}
       >
         {this.props.isFlipped

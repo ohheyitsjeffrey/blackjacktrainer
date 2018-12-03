@@ -6,20 +6,33 @@ import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
 import Hand from "./engine/hand";
-import Shoe from "./engine/shoe";
-import GameUtils from "./engine/game-utils";
+// import Shoe from "./engine/shoe";
+import {
+  calcPayout,
+  createNewState,
+  dealerShouldHit,
+  MODALMODES,
+} from "./engine/game-utils";
 
 import "./blackjack.css";
 
-const BETSTEP = 5;
+// unit in which bets are incremented
+const BETSTEP = 10;
+
+// passed to make an action occur for the dealer rather than player
+
 const DEALER = "dealer";
+
+// constants for determining which fragment to load in modal
+// const INSURANCE = MODALMODES.INSURANCE;
+const OPTIONS = MODALMODES.OPTIONS;
+const PLACEBET = MODALMODES.PLACEBET;
 
 class BlackJack extends Component {
   constructor(props) {
     super(props);
 
-    this.state = GameUtils.createNewState();
-
+    this.state = createNewState();
     // core blackjack engine methods
     this.evaluateGameState = this.evaluateGameState.bind(this);
 
@@ -29,6 +42,7 @@ class BlackJack extends Component {
     this.updateAndStartNewRound = this.updateAndStartNewRound.bind(this);
     this.clickToStartNextRound = this.clickToStartNextRound.bind(this);
     this.clickToSelectHand = this.clickToSelectHand.bind(this);
+    this.updateCustomOptions = this.updateCustomOptions.bind(this);
 
     // game table actions
     this.incrementBet = this.incrementBet.bind(this);
@@ -51,7 +65,7 @@ class BlackJack extends Component {
     this.dealCard = this.dealCard.bind(this);
   }
 
-  dealCard(who) {
+  dealCard(hand) {
     return new Promise((resolve) => {
       // clone shoe properties to avoid weird state mutations
       const shoe = _.cloneDeep(this.state.shoe);
@@ -59,20 +73,20 @@ class BlackJack extends Component {
 
       let stateUpdate;
 
-      if (who === DEALER) {
+      if (!_.isNil(hand)) {
+        // const index = this.state.activeHand;
+        const newPlayersHands = Array.from(this.state.playersHands);
+        newPlayersHands[hand].insert(card);
+        stateUpdate = {
+          playersHands: newPlayersHands,
+          shoe,
+        };
+      } else {
         // clone hand to avoid weird state mutations
         const newHand = _.cloneDeep(this.state.dealersHand);
         newHand.insert(card);
         stateUpdate = {
           dealersHand: newHand,
-          shoe,
-        };
-      } else {
-        const index = this.state.activeHand;
-        const newPlayersHands = Array.from(this.state.playersHands);
-        newPlayersHands[index].insert(card);
-        stateUpdate = {
-          playersHands: newPlayersHands,
           shoe,
         };
       }
@@ -85,66 +99,10 @@ class BlackJack extends Component {
     });
   }
 
-  createNewState() {
-    const newShoe = new Shoe(8);
-    newShoe.shuffle();
-
-    return {
-      options: {
-        minimumBet: BETSTEP,
-        dealerStands: 17,
-      },
-      funds: 1000,
-      bet: BETSTEP,
-      betPlaced: false,
-      shoe: newShoe,
-      dealersHand: new Hand(),
-      playersHands: [new Hand()],
-      activeHand: 0,
-      isPlayersTurn: false,
-      isDealersTurn: false,
-      waitForPlayerClick: false,
-    };
-  }
-
-  // check for existing blackjack state in localstorage
-  hasStateInLocalStorage() {
-    // check for relevent keys to make sure there is a valid game state in local storage somewhere.
-    // this allows existing gamestates to be overwritten if the game is updated with new needs.
-    return (
-      localStorage.getItem("funds") !== null &&
-      localStorage.getItem("bet") !== null &&
-      localStorage.getItem("betPlaced") !== null &&
-      localStorage.getItem("shoe") !== null &&
-      localStorage.getItem("options.minimumBet") !== null
-    );
-  }
-
-  restoreState() {
-    // restore previous values from local storage
-    const restoredFunds = parseInt(localStorage.getItem("funds"), 10);
-    const restoredBet = parseInt(localStorage.getItem("bet"), 10);
-    const restoredBetPlaced = localStorage.getItem("betPlaced");
-
-    const shoe = new Shoe();
-    const shoeCardsAsString = localStorage.getItem("shoe");
-    const restoredShoe = shoe.restoreFromString(shoeCardsAsString);
-
-    const restoredOptions = {
-      minimumBet: parseInt(localStorage.getItem("options.minimumBet"), 10),
-    };
-
-    // now restore the options object and return like new
-    return {
-      options: restoredOptions,
-      funds: restoredFunds,
-      bet: restoredBet,
-      betPlaced: (restoredBetPlaced === "true"),
-      shoe: restoredShoe,
-      dealersHand: new Hand(),
-      playersHands: [new Hand()],
-      activeHand: 0,
-    };
+  toggleModal(mode) {
+    this.state.modalMode === mode
+      ? this.setState({ modalMode: undefined })
+      : this.setState({ modalMode: mode });
   }
 
   componentDidUpdate() {
@@ -155,9 +113,13 @@ class BlackJack extends Component {
   // A common function to evaluate the state of the game and determine what if
   // anything to do next.  Needs a better name but so do plenty of things...
   evaluateGameState() {
+    // console.log("check")
     // The game just started and a bet has not been placed
-    if (!this.state.betPlaced) {
+    if (!this.state.betPlaced && this.state.modalMode !== PLACEBET) {
       // just wait for bet to be placed
+      this.setState({
+        modalMode: PLACEBET,
+      });
       return;
     }
 
@@ -191,7 +153,7 @@ class BlackJack extends Component {
     }
 
     // the round is over, settle each hand and wait for user input
-    if (this.state.dealersHand.isResolved() && !this.state.waitForPlayerClick) {
+    if (this.state.dealersHand && this.state.dealersHand.isResolved() && !this.state.waitForPlayerClick) {
       setTimeout(() => {
         this.settleRound();
       }, 500);
@@ -206,7 +168,7 @@ class BlackJack extends Component {
     let payout = 0;
 
     _.forEach(playersHands, (hand) => {
-      payout += GameUtils.calcPayout(hand, dealersHand, bet);
+      payout += calcPayout(hand, dealersHand, bet);
     });
 
     this.setState(prevState => ({
@@ -216,9 +178,6 @@ class BlackJack extends Component {
   }
 
   clickToStartNextRound() {
-    // this.state.waitForPlayerClick
-    //   ? this.updateAndStartNewRound()
-    //   : this.createNewState();
     if (this.state.waitForPlayerClick) {
       this.updateAndStartNewRound();
     }
@@ -233,16 +192,26 @@ class BlackJack extends Component {
   }
 
   updateAndStartNewRound() {
-    this.setState((prevState) => ({
-      activeHand: 0,
-      betPlaced: false,
-      bet: prevState.options.minimumBet,
-      isPlayersTurn: false,
-      isDealersTurn: false,
-      dealersHand: undefined,
-      playersHands: [],
-      waitForPlayerClick: false,
-    }));
+    const funds = this.state.funds;
+    const minimumBet = this.state.options.minimumBet;
+
+    if(funds < minimumBet){
+      // create a new gamestate with the existing options
+      const newGameState = createNewState(this.state.options);
+      // update state to start a new game
+      this.setState(newGameState);
+    } else {
+      this.setState((prevState) => ({
+        activeHand: 0,
+        betPlaced: false,
+        bet: prevState.options.minimumBet,
+        isPlayersTurn: false,
+        isDealersTurn: false,
+        dealersHand: undefined,
+        playersHands: [],
+        waitForPlayerClick: false,
+      }));
+    }
   }
 
   // if a player has split and has multiple hands, get the first one that is not resolved
@@ -270,7 +239,6 @@ class BlackJack extends Component {
   }
 
   placeBet() {
-    // const shoe = { ...this.state.shoe};
     const dealer = new Hand();
     const player = new Hand();
 
@@ -279,19 +247,20 @@ class BlackJack extends Component {
       funds: prevState.funds - prevState.bet,
       dealersHand: dealer,
       playersHands: [player],
+      // showModal: false,
+      modalMode: undefined,
     }), () => { this.dealNewRound(); });
   }
 
-
-
   dealNewRound() {
-    this.dealCard()
+    const index = this.state.activeHand
+    this.dealCard(index)
       .then(() => {
-        return this.dealCard(DEALER);
-      }).then(() => {
         return this.dealCard();
       }).then(() => {
-        return this.dealCard(DEALER);
+        return this.dealCard(index);
+      }).then(() => {
+        return this.dealCard();
       })
       .then(() => {
         return this.setState({
@@ -302,16 +271,15 @@ class BlackJack extends Component {
 
   dealersTurn() {
     const dealersHand = _.cloneDeep(this.state.dealersHand);
-    // const playerDidBust = GameUtils.allPlayerHandsDidBust(this.state.playersHands);
 
-    if (!GameUtils.dealerShouldHit(dealersHand, this.state.options)) {
+    if (!dealerShouldHit(dealersHand, this.state.options)) {
       dealersHand.stand = true;
       this.setState({
         dealersHand,
         dealersTurn: false,
       });
     } else {
-      this.dealCard(DEALER).then(
+      this.dealCard().then(
         () => {
           this.dealersTurn();
         }
@@ -329,7 +297,8 @@ class BlackJack extends Component {
   }
 
   hit() {
-    this.dealCard();
+    const index = this.state.activeHand
+    this.dealCard(index);
   }
 
   canStand() {
@@ -365,22 +334,22 @@ class BlackJack extends Component {
   }
 
   double() {
-    const handIndex = this.state.activeHand;
-    const shoe = this.state.shoe;
-    const hands = this.state.playersHands;
-    const funds = this.state.funds - this.state.bet;
+    const index = this.state.activeHand;
     const bet = this.state.bet * 2;
 
+    this.setState(
+      {bet: bet},
+      () => {
+        this.dealCard(index).then(
+          () => {
+            const playersHands = _.cloneDeep(this.state.playersHands);
+            playersHands[index].stand = true;
 
-    hands[handIndex].insert(shoe.draw());
-    hands[handIndex].stand = true;
-
-    this.setState({
-      shoe,
-      playersHands: hands,
-      funds,
-      bet,
-    });
+            this.setState({playersHands: playersHands});
+          }
+        );
+      }
+    );
   }
 
   canSplit() {
@@ -399,6 +368,7 @@ class BlackJack extends Component {
       firstCard.cardValue() === secondCard.cardValue();             // the cards are of equal value
   }
 
+  // TODO remove some of this hard coding to support resplitting
   split() {
     const handIndex = this.state.activeHand;
     const funds = this.state.funds - this.state.bet;
@@ -416,13 +386,8 @@ class BlackJack extends Component {
     hand1.insert(card1);
     hand2.insert(card2);
 
-    // copy the players hands as they are from state
-    const playersHands = this.state.playersHands;
-
-    // remove the hands to be split
-    playersHands.splice(handIndex, 1);
-
-    // push the new hands into the player's hands array
+    // push the new hands into the player's new hands array
+    const playersHands = [];
     playersHands.push(hand1);
     playersHands.push(hand2);
 
@@ -431,21 +396,36 @@ class BlackJack extends Component {
       playersHands,
       funds,
       bet,
+    },
+    () => {
+      this.dealCard(0).then(() => {
+        this.dealCard(1);
+      });
     });
+  }
+
+  updateCustomOptions(options) {
+    // this method will end the current game and begin a new one with custom passed options.
+    const newState = createNewState(options);
+
+    this.setState(newState);
   }
 
   render() {
     return (
       <div className="blackjack">
         <GameHeader
+          disableMenu={this.state.modalMode && this.state.modalMode !== OPTIONS}
+          toggleOptions={() => { this.toggleModal(OPTIONS); }}
           funds={this.state.funds}
-          disableMenu={!this.state.betPlaced}
         />
         <GameTable
           bet={this.state.bet}
           betPlaced={this.state.betPlaced}
+          closeModal={() => { this.toggleModal(undefined); }}
+          modalMode={this.state.modalMode}
+          clickToSelectHand={this.clickToSelectHand}
           clickToStartNextRound={this.clickToStartNextRound}
-          waitForPlayerClick={this.state.waitForPlayerClick}
           dealersHand={this.state.dealersHand}
           decrementBet={() => { this.decrementBet(); }}
           highlightIndex={this.state.activeHand}
@@ -454,17 +434,19 @@ class BlackJack extends Component {
           placeBet={() => { this.placeBet(); }}
           playersHands={this.state.playersHands}
           shouldHighlight={this.state.isPlayersTurn && this.state.playersHands.length > 1}
-          clickToSelectHand={this.clickToSelectHand}
+          waitForPlayerClick={this.state.waitForPlayerClick}
+          options={this.state.options}
+          updateCustomOptions={this.updateCustomOptions}
         />
         <Controls
-          canHit={this.canHit()}
-          hit={this.hit}
-          canStand={this.canStand()}
-          stand={this.stand}
           canDouble={this.canDouble()}
-          double={this.double}
+          canHit={this.canHit()}
           canSplit={this.canSplit()}
+          canStand={this.canStand()}
+          double={this.double}
+          hit={this.hit}
           split={this.split}
+          stand={this.stand}
         />
       </div>
     );

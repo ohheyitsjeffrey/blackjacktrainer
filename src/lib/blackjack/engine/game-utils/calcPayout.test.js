@@ -1,6 +1,6 @@
 import Card from "../card";
 import Hand from "../hand";
-import GameUtils from "./index.js";
+import {calcPayout } from "./index.js";
 
 it("calcPayout() returns 0 when dealer's hand > players", () => {
   const playersHand = new Hand();
@@ -16,7 +16,7 @@ it("calcPayout() returns 0 when dealer's hand > players", () => {
   dealersHand.insert(new Card("diamonds", "10"));
 
   // should return 0
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(0);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(0);
 });
 
 it("calcPayout() returns 10 when players's hand > dealers hand on a bet of 5", () => {
@@ -33,7 +33,7 @@ it("calcPayout() returns 10 when players's hand > dealers hand on a bet of 5", (
   dealersHand.insert(new Card("diamonds", "10"));
 
   // should return bet * 2
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(10);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(10);
 });
 
 it("calcPayout() returns 5 when players's hand === dealers hand on a bet of 5", () => {
@@ -50,7 +50,7 @@ it("calcPayout() returns 5 when players's hand === dealers hand on a bet of 5", 
   dealersHand.insert(new Card("diamonds", "10"));
 
   // should return bet
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(bet);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(bet);
 });
 
 it("calcPayout() returns 0 when dealer has a blackjack and player does not", () => {
@@ -68,7 +68,7 @@ it("calcPayout() returns 0 when dealer has a blackjack and player does not", () 
   dealersHand.insert(new Card("diamonds", "10"));
 
   // should return true
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(0);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(0);
 });
 
 it("calcPayout() returns 12.5 when player has a blackjack and dealer does not", () => {
@@ -86,7 +86,7 @@ it("calcPayout() returns 12.5 when player has a blackjack and dealer does not", 
   dealersHand.insert(new Card("clubs", "4"));
 
   // should return true
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(bet * 2.5);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(bet * 2.5);
 });
 
 it("calcPayout() returns 0 when players hand > dealers but player has bust", () => {
@@ -105,7 +105,7 @@ it("calcPayout() returns 0 when players hand > dealers but player has bust", () 
   dealersHand.insert(new Card("diamonds", "10"));
 
   // should return 0
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(0);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(0);
 });
 
 it("calcPayout() returns 10 when dealer's hand > players but dealer has bust", () => {
@@ -123,5 +123,5 @@ it("calcPayout() returns 10 when dealer's hand > players but dealer has bust", (
   dealersHand.insert(new Card("diamonds", "10"));
 
   // should return 10
-  expect(GameUtils.calcPayout(playersHand, dealersHand, bet)).toEqual(10);
+  expect(calcPayout(playersHand, dealersHand, bet)).toEqual(10);
 });

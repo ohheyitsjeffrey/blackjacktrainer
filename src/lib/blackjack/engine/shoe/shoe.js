@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import Card from "../card/card.js";
-import GameUtils from "../game-utils";
+import { suitsAndValues } from "../game-utils";
 
 export default class Shoe {
   constructor(size = 1) {
@@ -10,8 +10,8 @@ export default class Shoe {
   }
   // size specifies the number of decks in a shoe
   newShoe(size) {
-    const suits = GameUtils.suits;
-    const values = GameUtils.values;
+    const suits = suitsAndValues.suits;
+    const values = suitsAndValues.values;
 
     let cards = [];
 

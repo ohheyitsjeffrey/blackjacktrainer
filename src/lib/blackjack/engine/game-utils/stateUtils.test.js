@@ -1,4 +1,3 @@
-
 import Shoe from "../shoe";
 import Hand from "../hand";
 import Card from "../card/card.js";
@@ -8,7 +7,6 @@ import {
   createNewState,
   hasStateInLocalStorage,
   writeGameStateToLocalStorage,
-  restoreStateFromLocalStorage,
   playersHandsToString,
   restorePlayersHandsFromString,
 } from "./stateUtils";
@@ -29,6 +27,8 @@ const generateMockLocalStorageState = () => {
   localStorage.setItem("isPlayersTurn", "test");
   localStorage.setItem("isDealersTurn", "test");
   localStorage.setItem("waitForPlayerClick", "test");
+  localStorage.setItem("modalMode", "test");
+  localStorage.setItem("showModal", "test");
 };
 
 beforeEach(() => {
@@ -38,13 +38,13 @@ beforeEach(() => {
 // the default state that should be returned without parameters
 const defaultStateMock = {
   options: {
-    minimumBet: 5,
-    dealerStands: 17,
+    minimumBet: 10,
     shoeSize: 8,
+    hitOnSoft17: false,
   },
   shoe: new Shoe(8),
   funds: 1000,
-  bet: 5,
+  bet: 10,
   betPlaced: false,
   dealersHand: new Hand(),
   playersHands: [new Hand()],
@@ -52,12 +52,14 @@ const defaultStateMock = {
   isPlayersTurn: false,
   isDealersTurn: false,
   waitForPlayerClick: false,
+  showModal: false,
+  modalMode: undefined,
 };
 
 // valid custom options
 const customOptions = {
+  hitOnSoft17: true,
   minimumBet: 10,
-  dealerStands: 18,
   shoeSize: 4,
 };
 
@@ -74,7 +76,7 @@ it("optionsAreValid() returns false when no options are passed", () => {
 
 it("optionsAreValid() returns false for missing keys", () => {
   const missingMinimumBetOptions = {
-    dealerStands: 18,
+    hitOnSoft17: false,
     shoeSize: 4,
   };
 
@@ -85,7 +87,7 @@ it("optionsAreValid() returns false for missing keys", () => {
 
   const missingShoeSizeOptions = {
     minimumBet: 10,
-    dealerStands: 18,
+    hitOnSoft17: false,
   };
 
   const missingMinimumBet = optionsAreValid(missingMinimumBetOptions);
@@ -268,12 +270,12 @@ it("writeStateToLocalStorage() accurately writes values to local storage", () =>
   // write the defaultStateMock to local storage
   writeGameStateToLocalStorage(defaultStateMock);
 
-  expect(localStorage.getItem("options.minimumBet")).toEqual("5");
-  expect(localStorage.getItem("options.dealerStands")).toEqual("17");
+  expect(localStorage.getItem("options.minimumBet")).toEqual("10");
+  expect(localStorage.getItem("options.hitOnSoft17")).toEqual(null);
   expect(localStorage.getItem("options.shoeSize")).toEqual("8");
   expect(localStorage.getItem("shoe")).toEqual(defaultStateMock.shoe.toString());
   expect(localStorage.getItem("funds")).toEqual("1000");
-  expect(localStorage.getItem("bet")).toEqual("5");
+  expect(localStorage.getItem("bet")).toEqual("10");
   expect(localStorage.getItem("betPlaced")).toEqual("false");
   expect(localStorage.getItem("dealersHand")).toEqual("empty");
   expect(localStorage.getItem("playersHands")).toEqual("{\"hand\":\"empty\"}");
@@ -281,6 +283,7 @@ it("writeStateToLocalStorage() accurately writes values to local storage", () =>
   expect(localStorage.getItem("isPlayersTurn")).toEqual("false");
   expect(localStorage.getItem("isDealersTurn")).toEqual("false");
   expect(localStorage.getItem("waitForPlayerClick")).toEqual("false");
+  expect(localStorage.getItem("modalMode")).toEqual(null);
 });
 
 it("restorePlayersHands() accurately restores an array of one hand with cards", () => {
