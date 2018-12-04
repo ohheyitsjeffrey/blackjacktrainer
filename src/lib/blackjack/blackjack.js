@@ -305,6 +305,11 @@ class BlackJack extends Component {
   }
 
   canHit() {
+    // verify a modal isn't open
+    if(!_.isNil(this.state.modalMode)) {
+      return false;
+    }
+
     const handIndex = this.state.activeHand;
 
     return this.state.isPlayersTurn &&              // it is the players turn
@@ -320,6 +325,11 @@ class BlackJack extends Component {
   }
 
   canStand() {
+    // verify a modal isn't open
+    if(!_.isNil(this.state.modalMode)) {
+      return false;
+    }
+
     const handIndex = this.state.activeHand;
 
     return this.state.isPlayersTurn &&
@@ -342,6 +352,11 @@ class BlackJack extends Component {
   }
 
   canDouble() {
+    // verify a modal isn't open
+    if(!_.isNil(this.state.modalMode)) {
+      return false;
+    }
+
     const handIndex = this.state.activeHand;
 
     return this.state.isPlayersTurn &&
@@ -377,6 +392,11 @@ class BlackJack extends Component {
   }
 
   canSplit() {
+    // verify a modal isn't open
+    if(!_.isNil(this.state.modalMode)) {
+      return false;
+    }
+
     const handIndex = this.state.activeHand;
 
     if (!this.state.playersHands[handIndex] || !this.state.playersHands[handIndex]) {
