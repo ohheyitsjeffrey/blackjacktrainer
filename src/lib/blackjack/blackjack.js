@@ -16,7 +16,7 @@ import {
 
 import "./blackjack.css";
 
-// unit in which bets are incremented
+// unit in which bets are incremented, should probably be moved somewher else
 const BETSTEP = 10;
 
 // constants for determining which fragment to load in modal
@@ -270,7 +270,7 @@ class BlackJack extends Component {
   }
 
   dealNewRound() {
-    const index = this.state.activeHand
+    const index = this.state.activeHand;
     this.dealCard(index)
       .then(() => {
         return this.dealCard();
@@ -320,7 +320,7 @@ class BlackJack extends Component {
   }
 
   hit() {
-    const index = this.state.activeHand
+    const index = this.state.activeHand;
     this.dealCard(index);
   }
 
