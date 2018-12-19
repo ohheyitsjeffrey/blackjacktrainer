@@ -65,7 +65,9 @@ const GameTable = (props) => {
   return (
     <div className="game-table game-table-container">
       <div className="game-table game-table-inner">
-        <TableModal show={props.modalMode !== undefined}>
+        <TableModal
+          show={props.modalMode !== undefined}
+          size={props.modalMode === OPTIONS ? "large" : undefined }>
           {getModalBody(props.modalMode)}
         </TableModal>
         {

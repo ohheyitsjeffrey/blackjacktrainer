@@ -121,7 +121,6 @@ class BlackJack extends Component {
   // A common function to evaluate the state of the game and determine what if
   // anything to do next.  Needs a better name but so do plenty of things...
   evaluateGameState() {
-    // console.log("check")
     // The game just started and a bet has not been placed
     if (!this.state.betPlaced && this.state.modalMode !== PLACEBET) {
       // just wait for bet to be placed
@@ -146,7 +145,6 @@ class BlackJack extends Component {
           if(!this.state.inhibitPlayerAction) {
             this.setState({
               isPlayersTurn: false,
-              // isDealersTurn: true,
             }, () => {
               setTimeout(() => {
                 this.setState(

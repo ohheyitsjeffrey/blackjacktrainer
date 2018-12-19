@@ -35,10 +35,19 @@
   border-radius: 0px 0px 5px 5px;
   border:  black 1px solid;
   border-top: none;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
 p {
   text-align: left;
+}
+
+.menu-stretch-wrapper {
+  flex-grow: 1;
+  flex-shrink: 1;
+  align-self: stretch;
 }
 
 .option-row {
@@ -62,7 +71,7 @@ p {
 .option-footer {
   display: flex;
   flex-direction: row;
-  margin: 10px;
+  /* margin: 10px; */
 }
 
 .option-label {
@@ -79,6 +88,7 @@ p {
   flex-grow: 1;
   flex-shrink: 1;
   display: inline-flex;
+  justify-content: center;
 }
 
 .option-number-input {

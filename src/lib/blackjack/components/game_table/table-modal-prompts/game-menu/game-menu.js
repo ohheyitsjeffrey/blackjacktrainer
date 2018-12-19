@@ -12,16 +12,20 @@ const ABOUTMENU = "about";
 const AboutMenu = (props) => {
   return (
     <React.Fragment>
-      <p>
-        Blackjacktrainer.info is an open sourced blackjack game written in
+      <div className="menu-stretch-wrapper">
+        <p>
+          Blackjacktrainer.info is an open sourced blackjack game written in
         javascript.  The source code is available on <a
-          href="https://github.com/ohheyitsjeffrey/blackjacktrainer">
-          github</a>.
-      </p>
-      <p>
-        To report bugs, ...
-
-      </p>
+            href="https://github.com/ohheyitsjeffrey/blackjacktrainer">
+            github</a>.
+        </p>
+        <p>
+          To report bugs, suggest features or changes, or share your stories of how this
+          app helped you master the game of blackjack, feel free to
+          <a href="mailto:blackjacktrainer.info@gmail.com">email me</a>.
+        </p>
+        <p>Good luck!</p>
+      </div>
       <Button
         fullWidth
         onClick={props.closeModal}
@@ -35,52 +39,54 @@ const AboutMenu = (props) => {
 const OptionsMenu = (props) => {
   return (
     <React.Fragment>
-      <div className="option-row">
-        <div className="option-label">
-          hit on soft 17
+      <div className="menu-stretch-wrapper">
+        <div className="option-row">
+          <div className="option-label">
+            hit on soft 17
+          </div>
+          <div className="option-input-wrapper">
+            <Button
+              onClick={() => { props.toggleValue("hitOnSoft17"); }}
+            >
+              {props.options.hitOnSoft17 === true ? "on" : "off"}
+            </Button>
+          </div>
         </div>
-        <div className="option-input-wrapper">
-          <Button
-            onClick={() => { props.toggleValue("hitOnSoft17"); }}
-          >
-            {props.options.hitOnSoft17 === true ? "on" : "off"}
-          </Button>
+        <div className="option-row">
+          <div className="option-label">
+            shoe size
+          </div>
+          <div className="option-input-wrapper">
+            <Button
+              onClick={() => { props.decrementValue("shoeSize", 1, 1); }}
+            >
+              -
+            </Button>
+            <div className="option-number-value">{props.options.shoeSize}</div>
+            <Button
+              onClick={() => { props.incrementValue("shoeSize", 1, 12); }}
+            >
+              +
+            </Button>
+          </div>
         </div>
-      </div>
-      <div className="option-row">
-        <div className="option-label">
-          shoe size
-        </div>
-        <div className="option-input-wrapper">
-          <Button
-            onClick={() => { props.decrementValue("shoeSize", 1, 1); }}
-          >
-            -
-          </Button>
-          <div className="option-number-value">{props.options.shoeSize}</div>
-          <Button
-            onClick={() => { props.incrementValue("shoeSize", 1, 12); }}
-          >
-            +
-          </Button>
-        </div>
-      </div>
-      <div className="option-row">
-        <div className="option-label">
-          minimum bet
-        </div>
-        <div className="option-input-wrapper">
-          <Button
-            onClick={() => { props.decrementValue("minimumBet", 10, 10); }}
-          >
-            -
-          </Button>
-          <div className="option-number-value">{props.options.minimumBet}</div>
-          <Button
-            onClick={() => { props.incrementValue("minimumBet", 10, 250); }}
-          >
-            +
-          </Button>
+        <div className="option-row">
+          <div className="option-label">
+            minimum bet
+          </div>
+          <div className="option-input-wrapper">
+            <Button
+              onClick={() => { props.decrementValue("minimumBet", 10, 10); }}
+            >
+              -
+            </Button>
+            <div className="option-number-value">{props.options.minimumBet}</div>
+            <Button
+              onClick={() => { props.incrementValue("minimumBet", 10, 250); }}
+            >
+              +
+            </Button>
+          </div>
         </div>
       </div>
       <p>

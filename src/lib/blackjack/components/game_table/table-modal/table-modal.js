@@ -3,10 +3,32 @@ import PropTypes from "prop-types";
 
 import "./table-modal.css";
 
+// constants for fixed size
+const SMALL = "small";
+const LARGE = "large";
+
+const formatSize = (size) => {
+  if (size) {
+    const sizeString = size.toLowerCase();
+
+    switch (sizeString) {
+      case SMALL:
+        return SMALL;
+      case LARGE:
+        return LARGE;
+      default:
+        return undefined;
+    }
+  }
+  return undefined;
+};
+
 const TableModal = (props) => {
+  const size = formatSize(props.size);
+
   return (
     <div className="table-modal" style={props.show ? { display: "flex" } : { display: "none" }} >
-      <div className="table-modal-content">
+      <div className={size ? `table-modal-content table-modal-content-${size}` : "table-modal-content"}>
         {props.children}
       </div>
     </div>);
@@ -15,6 +37,7 @@ const TableModal = (props) => {
 TableModal.propTypes = {
   children: PropTypes.any,
   show: PropTypes.bool,
+  size: PropTypes.string,
 };
 
 const TableModalHeader = (props) => {
