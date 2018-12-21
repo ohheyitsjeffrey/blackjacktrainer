@@ -26,12 +26,14 @@ const AboutMenu = (props) => {
         </p>
         <p>Good luck!</p>
       </div>
-      <Button
-        fullWidth
-        onClick={props.closeModal}
-      >
-        Close
-      </Button>
+      <div className="option-footer">
+        <Button
+          fullWidth
+          onClick={props.closeModal}
+        >
+          Close
+        </Button>
+      </div>
     </React.Fragment>
   );
 };
