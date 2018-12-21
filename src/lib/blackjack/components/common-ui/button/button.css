@@ -6,6 +6,8 @@
   text-align: center;
   white-space: nowrap;
   font-size: 12pt;
+  background-color: #dddddd;
+  height: 2.7em;
 }
 
 .blackjacktrainer-button:hover {
