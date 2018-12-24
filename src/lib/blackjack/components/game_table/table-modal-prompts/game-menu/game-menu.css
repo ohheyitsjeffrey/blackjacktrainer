@@ -74,6 +74,10 @@ p {
   padding: 5px;
 }
 
+.option-footer button {
+  margin-bottom: 10px;
+}
+
 .option-label {
   width: 50%;
   text-align: left;
