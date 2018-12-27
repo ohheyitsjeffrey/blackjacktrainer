@@ -17,6 +17,7 @@ const generateMockLocalStorageState = () => {
   localStorage.setItem("options.minimumBet", "test");
   localStorage.setItem("options.dealerStands", "test");
   localStorage.setItem("options.shoeSize", "test");
+  localStorage.setItem("options.insurance", "test");
   localStorage.setItem("shoe", "test");
   localStorage.setItem("funds", "test");
   localStorage.setItem("bet", "test");
@@ -41,7 +42,8 @@ const defaultStateMock = {
   options: {
     minimumBet: 10,
     shoeSize: 8,
-    hitOnSoft17: false,
+    hitOnSoft17: true,
+    insurance: true,
   },
   shoe: new Shoe(8),
   funds: 1000,
@@ -62,6 +64,7 @@ const customOptions = {
   hitOnSoft17: true,
   minimumBet: 10,
   shoeSize: 4,
+  insurance: false,
 };
 
 // optionsAreValid() tests
@@ -272,8 +275,9 @@ it("writeStateToLocalStorage() accurately writes values to local storage", () =>
   writeGameStateToLocalStorage(defaultStateMock);
 
   expect(localStorage.getItem("options.minimumBet")).toEqual("10");
-  expect(localStorage.getItem("options.hitOnSoft17")).toEqual(null);
+  expect(localStorage.getItem("options.hitOnSoft17")).toEqual("true");
   expect(localStorage.getItem("options.shoeSize")).toEqual("8");
+  expect(localStorage.getItem("options.insurance")).toEqual("true");
   expect(localStorage.getItem("shoe")).toEqual(defaultStateMock.shoe.toString());
   expect(localStorage.getItem("funds")).toEqual("1000");
   expect(localStorage.getItem("bet")).toEqual("10");

@@ -6,15 +6,16 @@
   flex-shrink: 1;
   flex: 1;
   height: 80%;
-  justify-content: center; 
+  justify-content: center;
   min-width: 0;
   overflow: visible;
-  margin-left: "5px";
-  margin-right: "5px";
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 5px;
 }
 
-@keyframes blink { 
-    50% { 
-      border-color: transparent; 
-    } 
+@keyframes blink {
+    50% {
+      border-color: transparent;
+    }
 }

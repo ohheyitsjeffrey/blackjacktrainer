@@ -6,7 +6,6 @@ import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
 import Hand from "./engine/hand";
-// import Shoe from "./engine/shoe";
 import {
   calcPayout,
   createNewState,
@@ -29,7 +28,6 @@ class BlackJack extends Component {
     super(props);
 
     this.state = createNewState();
-    // core blackjack engine methods
     this.evaluateGameState = this.evaluateGameState.bind(this);
 
     this.getPlayersNextHand = this.getPlayersNextHand.bind(this);

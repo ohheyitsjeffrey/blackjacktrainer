@@ -7,7 +7,8 @@ import MODALMODES from "./modalModes";
 const defaultOptions = {
   minimumBet: 10,
   shoeSize: 8,
-  hitOnSoft17: false,
+  hitOnSoft17: true,
+  insurance: true,
 };
 
 // create a new state object for blackjack game, called in createNewState.
@@ -33,9 +34,10 @@ const newState = (options) => {
 // this function is only exported to test in jest and is not exported in index.js
 export function optionsAreValid(options) {
   return !_.isNil(options) &&
-    !_.isNil(options.minimumBet) && typeof (options.minimumBet) === "number" &&      // has minimumBet of type number
-    !_.isNil(options.shoeSize) && typeof (options.shoeSize) === "number" &&          // has shoeSize of type number
-    !_.isNil(options.hitOnSoft17) && typeof (options.hitOnSoft17) === "boolean";    // has dealerStands of type number
+    !_.isNil(options.minimumBet) && typeof (options.minimumBet) === "number" &&     // has minimumBet of type number
+    !_.isNil(options.shoeSize) && typeof (options.shoeSize) === "number" &&         // has shoeSize of type number
+    !_.isNil(options.hitOnSoft17) && typeof (options.hitOnSoft17) === "boolean" &&  // has dealerStands of type number
+    !_.isNil(options.insurance) && typeof (options.insurance) === "boolean";        // has dealerStands of type number
 }
 
 export function hasStateInLocalStorage() {
@@ -46,6 +48,7 @@ export function hasStateInLocalStorage() {
     localStorage.getItem("options.minimumBet") !== null &&
     localStorage.getItem("options.dealerStands") !== null &&
     localStorage.getItem("options.shoeSize") !== null &&
+    localStorage.getItem("options.insurance") !== null &&
     // has other state elements
     localStorage.getItem("shoe") !== null &&
     localStorage.getItem("funds") !== null &&
@@ -56,7 +59,6 @@ export function hasStateInLocalStorage() {
     localStorage.getItem("activeHand") !== null &&
     localStorage.getItem("isPlayersTurn") !== null &&
     localStorage.getItem("isDealersTurn") !== null &&
-    // localStorage.getItem("showModal") !== null &&
     localStorage.getItem("modalMode") !== null &&
     localStorage.getItem("waitForPlayerClick") !== null &&
     localStorage.getItem("inhibitPlayerAction") !== null
@@ -97,8 +99,9 @@ export function restorePlayersHandsFromString(playersHands) {
 
 export function writeGameStateToLocalStorage(state) {
   localStorage.setItem("options.minimumBet", state.options.minimumBet);
-  localStorage.setItem("options.dealerStands", state.options.dealerStands);
+  localStorage.setItem("options.hitOnSoft17", state.options.hitOnSoft17);
   localStorage.setItem("options.shoeSize", state.options.shoeSize);
+  localStorage.setItem("options.insurance", state.options.insurance);
   localStorage.setItem("shoe", state.shoe.toString());
   localStorage.setItem("funds", state.funds);
   localStorage.setItem("bet", state.bet);
