@@ -11,12 +11,15 @@ import {
   restorePlayersHandsFromString,
 } from "./stateUtils";
 
+// TODO Rework these!
+
 // this method will write a valid local state, assuming it has been updated if
 // state has also been updated
 const generateMockLocalStorageState = () => {
   localStorage.setItem("options.minimumBet", "test");
   localStorage.setItem("options.dealerStands", "test");
   localStorage.setItem("options.shoeSize", "test");
+  localStorage.setItem("options.insurance", "test");
   localStorage.setItem("shoe", "test");
   localStorage.setItem("funds", "test");
   localStorage.setItem("bet", "test");
@@ -30,6 +33,7 @@ const generateMockLocalStorageState = () => {
   localStorage.setItem("modalMode", "test");
   localStorage.setItem("showModal", "test");
   localStorage.setItem("inhibitPlayerAction", "test");
+  localStorage.setItem("hasInsurance", "test");
 };
 
 beforeEach(() => {
@@ -41,7 +45,8 @@ const defaultStateMock = {
   options: {
     minimumBet: 10,
     shoeSize: 8,
-    hitOnSoft17: false,
+    hitOnSoft17: true,
+    insurance: true,
   },
   shoe: new Shoe(8),
   funds: 1000,
@@ -55,6 +60,7 @@ const defaultStateMock = {
   waitForPlayerClick: false,
   inhibitPlayerAction: false,
   modalMode: undefined,
+  hasInsurance: false,
 };
 
 // valid custom options
@@ -62,6 +68,7 @@ const customOptions = {
   hitOnSoft17: true,
   minimumBet: 10,
   shoeSize: 4,
+  insurance: false,
 };
 
 // optionsAreValid() tests
@@ -272,8 +279,9 @@ it("writeStateToLocalStorage() accurately writes values to local storage", () =>
   writeGameStateToLocalStorage(defaultStateMock);
 
   expect(localStorage.getItem("options.minimumBet")).toEqual("10");
-  expect(localStorage.getItem("options.hitOnSoft17")).toEqual(null);
+  expect(localStorage.getItem("options.hitOnSoft17")).toEqual("true");
   expect(localStorage.getItem("options.shoeSize")).toEqual("8");
+  expect(localStorage.getItem("options.insurance")).toEqual("true");
   expect(localStorage.getItem("shoe")).toEqual(defaultStateMock.shoe.toString());
   expect(localStorage.getItem("funds")).toEqual("1000");
   expect(localStorage.getItem("bet")).toEqual("10");
@@ -320,7 +328,6 @@ it("restorePlayersHands() accurately restores an array of one hand with no cards
   expect(restoredHands[0].bust).toEqual(hand.bust);
   expect(restoredHands[0].stand).toEqual(hand.stand);
   expect(restoredHands[0].cards.length).toEqual(hand.cards.length);
-
 });
 
 it("restorePlayersHands() accurately restores an array of two hands with cards", () => {

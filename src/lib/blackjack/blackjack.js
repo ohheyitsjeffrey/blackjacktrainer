@@ -6,7 +6,6 @@ import GameHeader from "./components/game_header/game_header.js";
 import GameTable from "./components/game_table/game_table.js";
 
 import Hand from "./engine/hand";
-// import Shoe from "./engine/shoe";
 import {
   calcPayout,
   createNewState,
@@ -20,7 +19,7 @@ import "./blackjack.css";
 const BETSTEP = 10;
 
 // constants for determining which fragment to load in modal
-// const INSURANCE = MODALMODES.INSURANCE;
+const INSURANCE = MODALMODES.INSURANCE;
 const OPTIONS = MODALMODES.OPTIONS;
 const PLACEBET = MODALMODES.PLACEBET;
 
@@ -29,7 +28,6 @@ class BlackJack extends Component {
     super(props);
 
     this.state = createNewState();
-    // core blackjack engine methods
     this.evaluateGameState = this.evaluateGameState.bind(this);
 
     this.getPlayersNextHand = this.getPlayersNextHand.bind(this);
@@ -59,6 +57,11 @@ class BlackJack extends Component {
     this.canSplit = this.canSplit.bind(this);
 
     this.dealCard = this.dealCard.bind(this);
+    this.checkDealerHand = this.checkDealerHand.bind(this);
+
+    this.handleInsurance = this.handleInsurance.bind(this);
+    this.acceptInsurance = this.acceptInsurance.bind(this);
+    this.declineInsurance = this.declineInsurance.bind(this);
   }
 
   dealCard(hand) {
@@ -142,13 +145,13 @@ class BlackJack extends Component {
         const nextHand = this.getPlayersNextHand();
         // if the player's turn is over, update state and call dealtersTurn()
         if (nextHand < 0) {
-          if(!this.state.inhibitPlayerAction) {
+          if (!this.state.inhibitPlayerAction) {
             this.setState({
               isPlayersTurn: false,
             }, () => {
               setTimeout(() => {
                 this.setState(
-                  {isDealersTurn: true},
+                  { isDealersTurn: true },
                   () => {
                     setTimeout(() => {
                       this.dealersTurn();
@@ -179,12 +182,19 @@ class BlackJack extends Component {
     const playersHands = this.state.playersHands;
     const dealersHand = this.state.dealersHand;
     const bet = this.state.bet;
+    const insuranceEnabled = this.state.options.insurance;
+    const hasInsurance = this.state.hasInsurance;
 
     let payout = 0;
 
     _.forEach(playersHands, (hand) => {
       payout += calcPayout(hand, dealersHand, bet);
     });
+
+    // handle insurance here
+    if(insuranceEnabled && hasInsurance && dealersHand.isBlackJack()){
+      payout += (bet / 2);
+    }
 
     this.setState(prevState => ({
       funds: prevState.funds + payout,
@@ -225,6 +235,7 @@ class BlackJack extends Component {
         dealersHand: undefined,
         playersHands: [],
         waitForPlayerClick: false,
+        hasInsurance: false,
       }));
     }
   }
@@ -278,10 +289,85 @@ class BlackJack extends Component {
         return this.dealCard();
       })
       .then(() => {
-        return this.setState({
-          isPlayersTurn: true,
-        });
+        // return this.setState({
+        //   isPlayersTurn: true,
+        // });
+        return this.checkDealerHand();
       });
+  }
+
+  checkDealerHand() {
+    const dealerVisibleCard = this.state.dealersHand.cards[1];
+    const dealerVisibleCardValue = dealerVisibleCard.cardValue();
+    // if dealer has a 10 or an ace visible they need to peek for blackjack
+    if (dealerVisibleCardValue === "10" || dealerVisibleCardValue === "ace") {
+      // if the insurance option is enabled, offer insurance
+      if (this.state.options.insurance && dealerVisibleCardValue === "ace") {
+        // this.checkForDealerBlackJack();
+        this.handleInsurance();
+      } else {
+        // otherwise, determine if dealer has blackjack and end the game if so,
+        this.checkForDealerBlackJack();
+      }
+    } else {
+      // or just proceed as normal if not
+      this.setState({
+        isPlayersTurn: true,
+      });
+    }
+  }
+
+  handleInsurance() {
+    this.setState({
+      modalMode: INSURANCE,
+    });
+  }
+
+  acceptInsurance() {
+    const bet = this.state.bet;
+    const funds = this.state.funds;
+
+    if(funds >= (bet / 2 )){
+      this.setState(
+        {
+          hasInsurance: true,
+          modalMode: undefined,
+          funds: funds - (bet / 2)
+        },
+        this.checkForDealerBlackJack()
+      );
+    }
+  }
+
+  declineInsurance() {
+    this.setState(
+      {
+        hasInsurance: false,
+        modalMode: undefined,
+      },
+      this.checkForDealerBlackJack()
+    );
+  }
+
+  checkForDealerBlackJack() {
+    const dealerHand = this.state.dealersHand;
+    if (dealerHand.isBlackJack()) {
+      // skip player's turn by making each playersHand stand and then making
+      // it the player's turn to keep the game moving as normal
+      const playersHands = _.cloneDeep(this.state.playersHands);
+      playersHands.forEach((hand) => {
+        hand.stand = true;
+      });
+
+      this.setState({
+        playersHands,
+        isPlayersTurn: true,
+      });
+    } else {
+      this.setState({
+        isPlayersTurn: true,
+      });
+    }
   }
 
   dealersTurn() {
@@ -304,7 +390,7 @@ class BlackJack extends Component {
 
   canHit() {
     // verify a modal isn't open
-    if(!_.isNil(this.state.modalMode)) {
+    if (!_.isNil(this.state.modalMode)) {
       return false;
     }
 
@@ -324,7 +410,7 @@ class BlackJack extends Component {
 
   canStand() {
     // verify a modal isn't open
-    if(!_.isNil(this.state.modalMode)) {
+    if (!_.isNil(this.state.modalMode)) {
       return false;
     }
 
@@ -351,7 +437,7 @@ class BlackJack extends Component {
 
   canDouble() {
     // verify a modal isn't open
-    if(!_.isNil(this.state.modalMode)) {
+    if (!_.isNil(this.state.modalMode)) {
       return false;
     }
 
@@ -391,7 +477,7 @@ class BlackJack extends Component {
 
   canSplit() {
     // verify a modal isn't open
-    if(!_.isNil(this.state.modalMode)) {
+    if (!_.isNil(this.state.modalMode)) {
       return false;
     }
 
@@ -478,6 +564,8 @@ class BlackJack extends Component {
           waitForPlayerClick={this.state.waitForPlayerClick}
           options={this.state.options}
           updateCustomOptions={this.updateCustomOptions}
+          acceptInsurance={this.acceptInsurance}
+          declineInsurance={this.declineInsurance}
         />
         <Controls
           canDouble={this.canDouble()}

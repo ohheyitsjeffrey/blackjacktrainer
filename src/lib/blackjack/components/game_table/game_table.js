@@ -9,6 +9,7 @@ import { MODALMODES } from "../../engine/game-utils";
 import {
   PlaceBetPrompt,
   GameMenu,
+  InsurancePrompt,
 } from "./table-modal-prompts";
 
 import "./game_table.css";
@@ -23,8 +24,11 @@ const GameTable = (props) => {
   const getModalBody = (mode) => {
     const modalMap = {};
     modalMap[INSURANCE] = {
-      component: "",
-      props: "",
+      component: InsurancePrompt,
+      props: {
+        acceptInsurance: props.acceptInsurance,
+        declineInsurance: props.declineInsurance,
+      },
     };
     modalMap[OPTIONS] = {
       component: GameMenu,
@@ -129,6 +133,8 @@ GameTable.propTypes = {
   clickToSelectHand: PropTypes.func,
   options: PropTypes.object,
   updateCustomOptions: PropTypes.func,
+  acceptInsurance: PropTypes.func,
+  declineInsurance: PropTypes.func,
 };
 
 export default GameTable;

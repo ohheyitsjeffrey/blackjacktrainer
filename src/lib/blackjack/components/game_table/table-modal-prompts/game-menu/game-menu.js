@@ -56,6 +56,18 @@ const OptionsMenu = (props) => {
         </div>
         <div className="option-row">
           <div className="option-label">
+            insurance
+          </div>
+          <div className="option-input-wrapper">
+            <Button
+              onClick={() => { props.toggleValue("insurance"); }}
+            >
+              {props.options.insurance === true ? "on" : "off"}
+            </Button>
+          </div>
+        </div>
+        <div className="option-row">
+          <div className="option-label">
             shoe size
           </div>
           <div className="option-input-wrapper">
