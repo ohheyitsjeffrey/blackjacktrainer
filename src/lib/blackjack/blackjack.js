@@ -193,7 +193,7 @@ class BlackJack extends Component {
 
     // handle insurance here
     if(insuranceEnabled && hasInsurance && dealersHand.isBlackJack()){
-      payout += (bet / 2);
+      payout += bet;
     }
 
     this.setState(prevState => ({
