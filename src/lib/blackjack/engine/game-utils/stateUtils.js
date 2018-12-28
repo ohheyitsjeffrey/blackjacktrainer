@@ -28,6 +28,7 @@ const newState = (options) => {
     waitForPlayerClick: false,
     inhibitPlayerAction: false,
     modalMode: MODALMODES.PLACEBET,
+    hasInsurance: false,
   };
 };
 

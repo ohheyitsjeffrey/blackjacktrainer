@@ -11,6 +11,8 @@ import {
   restorePlayersHandsFromString,
 } from "./stateUtils";
 
+// TODO Rework these!
+
 // this method will write a valid local state, assuming it has been updated if
 // state has also been updated
 const generateMockLocalStorageState = () => {
@@ -31,6 +33,7 @@ const generateMockLocalStorageState = () => {
   localStorage.setItem("modalMode", "test");
   localStorage.setItem("showModal", "test");
   localStorage.setItem("inhibitPlayerAction", "test");
+  localStorage.setItem("hasInsurance", "test");
 };
 
 beforeEach(() => {
@@ -57,6 +60,7 @@ const defaultStateMock = {
   waitForPlayerClick: false,
   inhibitPlayerAction: false,
   modalMode: undefined,
+  hasInsurance: false,
 };
 
 // valid custom options
@@ -324,7 +328,6 @@ it("restorePlayersHands() accurately restores an array of one hand with no cards
   expect(restoredHands[0].bust).toEqual(hand.bust);
   expect(restoredHands[0].stand).toEqual(hand.stand);
   expect(restoredHands[0].cards.length).toEqual(hand.cards.length);
-
 });
 
 it("restorePlayersHands() accurately restores an array of two hands with cards", () => {
