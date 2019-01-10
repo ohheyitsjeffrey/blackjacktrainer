@@ -1,14 +1,15 @@
 import { suitsAndValues } from "../game-utils";
+import _ from "lodash";
 
 const suits = suitsAndValues.suits;
 const values = suitsAndValues.values;
 
 export default class Card {
   constructor(suit, value) {
-    if (!suits.includes(suit)) {
+    if (!_.includes(suits, suit)) {
       throw new Error(`Not a valid card suit.  Valid suites are: ${suits}`);
     }
-    if (!values.includes(value)) {
+    if (!_.includes(values, value)) {
       throw new Error(`Not a valid card value.  Valid values are: ${values}`);
     }
 

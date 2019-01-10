@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 import Hand from "../hand/hand.js";
 import MessageOverlay from "./message_overlay/message_overlay.js";
@@ -48,7 +49,7 @@ const GameTable = (props) => {
       },
     };
 
-    if (mode && Object.keys(modalMap).includes(mode)) {
+    if (mode && _.includes(Object.keys(modalMap) , mode)) {
       const Component = modalMap[mode].component;
       const modalProps = modalMap[mode].props;
 
