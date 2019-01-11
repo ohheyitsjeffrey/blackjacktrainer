@@ -21,8 +21,9 @@ const AboutMenu = (props) => {
         </p>
         <p>
           To report bugs, suggest features or changes, or share your stories of how this
-          app helped you master the game of blackjack, feel free to
-          <a href="mailto:blackjacktrainer.info@gmail.com">email me</a>.
+          app helped you master the game of blackjack, feel free to <a href="mailto:blackjacktrainer.info@gmail.com">
+          email me
+          </a>.
         </p>
         <p>Good luck!</p>
       </div>
