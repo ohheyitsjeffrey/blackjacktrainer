@@ -1,15 +1,26 @@
-# BlackJack Trainer
+# BlackJackTrainer
+A blackjack game written in react.js.
 
-![preview image](preview.png "Logo Title Text 1")
+You can see it live here:
 
-**Note: This Is Still Very Much In Beta As I Work Through Known Bugs And Incomplete Features**
+http://www.blackjacktrainer.info
 
-As stated, this is still very much in active development and is not yet ready for it's intended use.  That being said if you would like to check it out in it's current beta state, you can do so locally 
-by cloning the repo and installing packages with `npm install`.
+Or a potentially more buggy (but more cutting edge in the field of react.js blackjack games) staging release here:
+
+http://staging.blackjacktrainer.info
+
+## Running Locally
+If you would like to run it locally for whatever reason, feel free to clone this repository.
+
+to install the app, run `npm install`
 
 To launch the app run `npm start`
 
-A very very special thanks to the creators of the svg playing card faces and back:
+You should be able to find it at `localhost:3000`.
+
+## Credits
+A special thank to the creators of the playing card svgs!
 
 card faces: https://github.com/notpeter/Vector-Playing-Cards
+
 card back:  https://commons.wikimedia.org/wiki/File:Card_back_01.svg
